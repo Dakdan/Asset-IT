@@ -1,28 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>LOG</title>
+<title>Admin Log</title>
 <link rel="stylesheet" href="./css/style.css">
+<style>
+body{
+  background:#fce4ec;
+  padding:20px;
+  display:block;
+}
+h2{ margin-bottom:15px; }
+</style>
 </head>
+
 <body>
 
-<h2>System LOG</h2>
-<table class="table" id="tbl"></table>
+<h2>📜 Admin : System Log</h2>
+
+<a href="admin-approve.html">⬅ กลับหน้าอนุมัติ</a>
+
+<table class="table admin-table" style="margin-top:15px">
+  <thead>
+    <tr>
+      <th>เวลา</th>
+      <th>Action</th>
+      <th>Email</th>
+      <th>Detail</th>
+      <th>By</th>
+    </tr>
+  </thead>
+  <tbody id="logList"></tbody>
+</table>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังโหลดข้อมูล...</p>
+  </div>
+</div>
 
 <script>
-const API='YOUR_GAS_URL';
-const user=JSON.parse(localStorage.getItem('it_user'));
-if(user.role!=='ADMIN') location.href='login.html';
+/************** CONFIG **************/
+const API_URL = 'YOUR_DEPLOYED_GAS_URL'; // 🔥 ใส่ URL ที่ deploy แล้ว
 
-fetch(`${API}?action=getLog&role=ADMIN`)
-.then(r=>r.json())
-.then(res=>{
-  const tbl=document.getElementById('tbl');
-  res.data.forEach(r=>{
-    tbl.innerHTML+=`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+/************** SESSION **************/
+const user = JSON.parse(localStorage.getItem('it_user'));
+if(!user || user.role !== 'ADMIN'){
+  location.href = 'login.html';
+}
+
+/************** UTIL **************/
+function showOverlay(show){
+  document.getElementById('overlay').classList.toggle('hidden', !show);
+}
+function jsonp(url){
+  return new Promise(res=>{
+    const cb = 'cb'+Date.now();
+    window[cb]=data=>{ delete window[cb]; res(data); };
+    const s=document.createElement('script');
+    s.src=url+'&callback='+cb;
+    document.body.appendChild(s);
   });
-});
+}
+
+/************** LOAD LOG **************/
+async function loadLog(){
+  showOverlay(true);
+
+  const r = await jsonp(
+    `${API_URL}?action=getLog&role=${user.role}`
+  );
+
+  showOverlay(false);
+
+  if(!r.success){
+    alert(r.message);
+    return;
+  }
+
+  const tb = document.getElementById('logList');
+  tb.innerHTML = '';
+
+  r.data.slice(1).reverse().forEach(row=>{
+    tb.innerHTML += `
+      <tr>
+        <td data-label="เวลา">${new Date(row[0]).toLocaleString()}</td>
+        <td data-label="Action">${row[1]}</td>
+        <td data-label="Email">${row[2]}</td>
+        <td data-label="Detail">${row[3]}</td>
+        <td data-label="By">${row[4]}</td>
+      </tr>
+    `;
+  });
+}
+
+/************** INIT **************/
+loadLog();
 </script>
+
 </body>
 </html>
