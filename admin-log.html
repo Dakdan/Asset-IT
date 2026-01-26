@@ -4,99 +4,67 @@
 <meta charset="UTF-8">
 <title>Admin Log</title>
 <link rel="stylesheet" href="./css/style.css">
-<style>
-body{
-  background:#fce4ec;
-  padding:20px;
-  display:block;
-}
-h2{ margin-bottom:15px; }
-</style>
+<link rel="stylesheet" href="./css/ui.css">
 </head>
 
-<body>
+<body class="login-page">
 
-<h2>📜 Admin : System Log</h2>
+<div class="login-wrapper">
+<div class="login-card" style="max-width:1000px">
 
-<a href="admin-approve.html">⬅ กลับหน้าอนุมัติ</a>
+<h2>LOG การใช้งานระบบ</h2>
 
-<table class="table admin-table" style="margin-top:15px">
-  <thead>
-    <tr>
-      <th>เวลา</th>
-      <th>Action</th>
-      <th>Email</th>
-      <th>Detail</th>
-      <th>By</th>
-    </tr>
-  </thead>
-  <tbody id="logList"></tbody>
+<table class="table">
+<thead>
+<tr>
+  <th>เวลา</th>
+  <th>Action</th>
+  <th>Email</th>
+  <th>Detail</th>
+</tr>
+</thead>
+<tbody id="logTable"></tbody>
 </table>
 
-<!-- Overlay -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังโหลดข้อมูล...</p>
-  </div>
+</div>
 </div>
 
 <script>
-/************** CONFIG **************/
-const API_URL = 'YOUR_DEPLOYED_GAS_URL'; // 🔥 ใส่ URL ที่ deploy แล้ว
-
-/************** SESSION **************/
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 const user = JSON.parse(localStorage.getItem('it_user'));
-if(!user || user.role !== 'ADMIN'){
-  location.href = 'login.html';
+
+if(!user || user.role!=='ADMIN'){
+  location.href='login.html';
 }
 
-/************** UTIL **************/
-function showOverlay(show){
-  document.getElementById('overlay').classList.toggle('hidden', !show);
-}
-function jsonp(url){
-  return new Promise(res=>{
-    const cb = 'cb'+Date.now();
-    window[cb]=data=>{ delete window[cb]; res(data); };
-    const s=document.createElement('script');
-    s.src=url+'&callback='+cb;
-    document.body.appendChild(s);
-  });
+function jsonp(url, cb){
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
 }
 
-/************** LOAD LOG **************/
-async function loadLog(){
-  showOverlay(true);
-
-  const r = await jsonp(
-    `${API_URL}?action=getLog&role=${user.role}`
+function loadLog(){
+  jsonp(
+    GAS_URL+'?action=getLog&role=ADMIN',
+    'render'
   );
+}
 
-  showOverlay(false);
-
-  if(!r.success){
-    alert(r.message);
-    return;
-  }
-
-  const tb = document.getElementById('logList');
-  tb.innerHTML = '';
-
-  r.data.slice(1).reverse().forEach(row=>{
-    tb.innerHTML += `
+function render(res){
+  if(!res.success) return;
+  logTable.innerHTML='';
+  res.data.slice(1).reverse().forEach(l=>{
+    logTable.innerHTML+=`
       <tr>
-        <td data-label="เวลา">${new Date(row[0]).toLocaleString()}</td>
-        <td data-label="Action">${row[1]}</td>
-        <td data-label="Email">${row[2]}</td>
-        <td data-label="Detail">${row[3]}</td>
-        <td data-label="By">${row[4]}</td>
-      </tr>
-    `;
+        <td>${l[0]}</td>
+        <td>${l[1]}</td>
+        <td>${l[2]}</td>
+        <td>${l[3]}</td>
+      </tr>`;
   });
 }
 
-/************** INIT **************/
 loadLog();
 </script>
 
