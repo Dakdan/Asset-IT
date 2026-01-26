@@ -6,22 +6,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN
 // ===============================
 // CALL API (กลาง)
 // ===============================
-async function callAPI(action, data = {}) {
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        action,
-        ...data
-      })
+function callAPI(action, data = {}) {
+  return new Promise((resolve) => {
+    const callbackName = "cb_" + Date.now();
+
+    window[callbackName] = function (res) {
+      resolve(res);
+      delete window[callbackName];
+      document.body.removeChild(script);
+    };
+
+    const params = new URLSearchParams({
+      action,
+      callback: callbackName,
+      ...data
     });
 
-    return await res.json();
-  } catch (err) {
-    console.error("API Error:", err);
-    return { success: false, message: "เชื่อมต่อระบบไม่ได้" };
-  }
+    const script = document.createElement("script");
+    script.src = API_URL + "?" + params.toString();
+    document.body.appendChild(script);
+  });
+
+
 }
