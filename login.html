@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>ระบบซ่อมบำรุง IT</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>ยืนยันรหัสสมัครสมาชิก | ระบบซ่อมบำรุง IT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- STYLE หลัก (ห้ามหาย) -->
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- STYLE หลัก (ห้ามหาย) -->
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
 <body class="login-page">
@@ -17,53 +17,25 @@
 
   <!-- HEADER -->
   <div class="login-header">
-    <h1>ระบบซ่อมบำรุง IT</h1>
-    <p>สำหรับเจ้าหน้าที่เทคโนโลยีสารสนเทศ</p>
+    <h1>ยืนยันรหัสสมัครสมาชิก</h1>
+    <p>ระบบซ่อมบำรุง IT</p>
   </div>
 
   <!-- CARD -->
   <div class="login-card">
 
-    <!-- ===== LOGIN ===== -->
-    <div id="loginBox">
-      <h2 style="text-align:center">เข้าสู่ระบบ</h2>
-
-      <div class="form-group">
-        <input id="loginEmail" type="email" placeholder="Email" autocomplete="username">
-      </div>
-
-      <div class="form-group">
-        <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password">
-      </div>
-
-      <button class="btn-login" id="loginBtn" onclick="login()">เข้าสู่ระบบ</button>
-
-      <div class="register-link" style="text-align:center;margin-top:15px;">
-        <a onclick="showRegister()">สมัครสมาชิก</a>
-      </div>
+    <div class="form-group">
+      <input id="email" type="email" placeholder="Email ที่ใช้สมัคร">
     </div>
 
-    <!-- ===== REGISTER ===== -->
-    <div id="registerBox" class="hidden">
-      <h2 style="text-align:center">สมัครสมาชิก IT</h2>
+    <div class="form-group">
+      <input id="code" placeholder="รหัสยืนยัน 6 หลัก">
+    </div>
 
-      <div class="form-group">
-        <input id="regName" placeholder="ชื่อ - สกุล">
-      </div>
+    <button class="btn-login" onclick="verifyCode()">ยืนยันรหัส</button>
 
-      <div class="form-group">
-        <input id="regEmail" type="email" placeholder="Email">
-      </div>
-
-      <div class="form-group">
-        <input id="regPassword" type="password" placeholder="Password">
-      </div>
-
-      <button class="btn-login" id="regBtn" onclick="register()">สมัครสมาชิก</button>
-
-      <div class="register-link" style="text-align:center;margin-top:15px;">
-        <a onclick="showLogin()">กลับไปหน้า Login</a>
-      </div>
+    <div class="register-link">
+      <a href="./login.html">กลับไปหน้า Login</a>
     </div>
 
   </div>
@@ -73,14 +45,14 @@
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <p id="overlayMsg">กำลังดำเนินการ...</p>
+    <p>กำลังตรวจสอบ...</p>
   </div>
 </div>
 
 <!-- ===== POPUP กลางระบบ ===== -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <h3>แจ้งเตือน</h3>
     <p id="popupMsg">-</p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
@@ -91,96 +63,45 @@
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 
-/* ===== JSONP ===== */
-function jsonp(url, cb){
+function jsonp(url, cb) {
   const s = document.createElement('script');
   s.src = url + '&callback=' + cb;
   document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
+  setTimeout(() => s.remove(), 3000);
 }
 
-/* ===== UI ===== */
-function showRegister(){
-  loginBox.classList.add('hidden');
-  registerBox.classList.remove('hidden');
-}
-function showLogin(){
-  registerBox.classList.add('hidden');
-  loginBox.classList.remove('hidden');
-}
+function verifyCode() {
+  const email = document.getElementById('email').value.trim();
+  const code = document.getElementById('code').value.trim();
 
-/* ===== LOGIN ===== */
-function login(){
-  const btn = loginBtn;
-  if(!loginEmail.value || !loginPassword.value){
-    showPopup('ข้อมูลไม่ครบ','กรุณากรอก Email และ Password');
+  if (!email || !code) {
+    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และรหัสยืนยัน");
     return;
   }
 
-  btn.disabled = true;
-  showOverlay('กำลังตรวจสอบข้อมูล...');
+  showOverlay("กำลังตรวจสอบรหัส...");
 
   jsonp(
     GAS_URL +
-    '?action=login' +
-    '&email=' + encodeURIComponent(loginEmail.value) +
-    '&password=' + encodeURIComponent(loginPassword.value),
-    'loginCallback'
+    '?action=verify' +
+    '&email=' + encodeURIComponent(email) +
+    '&code=' + encodeURIComponent(code),
+    'verifyCallback'
   );
 }
 
-function loginCallback(res){
+function verifyCallback(res) {
   hideOverlay();
-  loginBtn.disabled = false;
 
-  if(res.success){
-    showPopup('สำเร็จ','ยินดีต้อนรับ ' + res.user.name);
-    // location.href = 'admin.html';
-  }else{
-    showPopup('ไม่สำเร็จ', res.message);
+  if (res.success) {
+    showPopup(
+      "สำเร็จ",
+      "ยืนยันเรียบร้อยแล้ว\nรอผู้ดูแลระบบอนุมัติการใช้งาน"
+    );
+  } else {
+    showPopup("ไม่สำเร็จ", res.message || "รหัสไม่ถูกต้อง");
   }
 }
-
-/* ===== REGISTER ===== */
-function register(){
-  const btn = regBtn;
-  if(!regName.value || !regEmail.value || !regPassword.value){
-    showPopup('ข้อมูลไม่ครบ','กรุณากรอกข้อมูลให้ครบ');
-    return;
-  }
-
-  btn.disabled = true;
-  showOverlay('กำลังบันทึกข้อมูล...');
-
-  jsonp(
-    GAS_URL +
-    '?action=register' +
-    '&name=' + encodeURIComponent(regName.value) +
-    '&email=' + encodeURIComponent(regEmail.value) +
-    '&password=' + encodeURIComponent(regPassword.value),
-    'registerCallback'
-  );
-}
-
-function registerCallback(res){
-  hideOverlay();
-  regBtn.disabled = false;
-
-  if(res.success){
-    showPopup('สมัครสมาชิกสำเร็จ', res.message);
-    showLogin();
-  }else{
-    showPopup('ผิดพลาด', res.message);
-  }
-}
-
-/* ===== ENTER KEY ===== */
-document.addEventListener('keydown', e=>{
-  if(e.key === 'Enter'){
-    if(!loginBox.classList.contains('hidden')) login();
-    if(!registerBox.classList.contains('hidden')) register();
-  }
-});
 </script>
 
 </body>
