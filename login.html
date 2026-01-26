@@ -7,6 +7,7 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
@@ -43,57 +44,82 @@
       >
     </div>
 
-    <button class="btn-login" onclick="login()">
+    <button class="btn-login" id="loginBtn" onclick="login()">
       เข้าสู่ระบบ
     </button>
 
-    <div class="register-link">
+    <div class="register-link" style="text-align:center;margin-top:15px;">
       <a href="./register.html">ลงทะเบียนผู้ใช้งานใหม่</a>
     </div>
   </div>
 
 </div>
 
-<!-- JS : วางล่างสุด -->
+<!-- ================= OVERLAY ================= -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังดำเนินการ...</p>
+  </div>
+</div>
+
+<!-- ================= POPUP ================= -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3>แจ้งเตือน</h3>
+    <p>-</p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<!-- JS -->
 <script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
 <script src="./js/main.js"></script>
 
-</body>
-
-// ===============================
-// LOGIN
-// ===============================
+<script>
+/* ===============================
+   LOGIN
+================================ */
 async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const btn = document.getElementById("loginBtn");
 
   if (!email || !password) {
-    alert("กรุณากรอก Email และ Password");
+    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และ Password");
     return;
   }
 
-  // 🔵 SHOW OVERLAY
+  btn.disabled = true;
   showOverlay("กำลังเข้าสู่ระบบ...");
 
   try {
-    const result = await callAPI("login", {
-      email,
-      password
-    });
+    const result = await callAPI("login", { email, password });
 
     if (result.success) {
       localStorage.setItem("it_session", JSON.stringify(result.user));
       location.href = "./index.html";
     } else {
-      alert(result.message || "Login ไม่สำเร็จ");
+      showPopup("เข้าสู่ระบบไม่สำเร็จ", result.message || "ข้อมูลไม่ถูกต้อง");
     }
 
   } catch (err) {
-    alert("ไม่สามารถเชื่อมต่อระบบได้");
     console.error(err);
+    showPopup("ผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้");
   } finally {
-    // 🔴 HIDE OVERLAY
     hideOverlay();
+    btn.disabled = false;
   }
 }
+
+/* ===============================
+   ENTER KEY LOGIN
+================================ */
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") login();
+});
+</script>
+
+</body>
 </html>
