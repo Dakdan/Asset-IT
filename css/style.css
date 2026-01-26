@@ -146,3 +146,13 @@ input {
   text-align: center;
   margin-top: 15px;
 }
+@media (max-width: 768px) {
+  table.admin-table {
+    font-size: 13px;
+  }
+
+  table.admin-table th,
+  table.admin-table td {
+    white-space: nowrap;
+  }
+}
