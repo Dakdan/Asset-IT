@@ -2,10 +2,11 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Login | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="css/style.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
@@ -13,32 +14,47 @@
 
 <div class="login-wrapper">
 
+  <!-- HEADER -->
   <div class="login-header">
     <img src="./โรงพยาบาลอุดรธานี.png" class="header-logo">
     <h1>โรงพยาบาลอุดรธานี</h1>
     <p>ระบบซ่อมบำรุง IT</p>
   </div>
-  
-  <div class="login-card">
 
-    <h2 style="text-align:center;margin-bottom:20px;">🔐 Login</h2>
+  <!-- LOGIN CARD -->
+  <div class="login-card">
+    <h2 style="text-align:center; margin-bottom:20px;">🔐 เข้าสู่ระบบ</h2>
 
     <div class="form-group">
-      <input id="email" type="email" placeholder="Email">
+      <input
+        id="email"
+        type="email"
+        placeholder="Email"
+        autocomplete="username"
+      >
     </div>
 
     <div class="form-group">
-      <input id="password" type="password" placeholder="Password">
+      <input
+        id="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
     </div>
 
     <button class="btn-login" onclick="login()">
       เข้าสู่ระบบ
     </button>
 
+    <div style="text-align:center; margin-top:15px;">
+      <a href="./register.html">ลงทะเบียนผู้ใช้งานใหม่</a>
+    </div>
   </div>
 
 </div>
 
+<!-- JS : วางล่างสุดเท่านั้น -->
 <script src="./js/api.js"></script>
 <script src="./js/main.js"></script>
 
