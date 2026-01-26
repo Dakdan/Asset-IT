@@ -1,68 +1,28 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Admin Log</title>
+<title>LOG</title>
 <link rel="stylesheet" href="./css/style.css">
 </head>
+<body>
 
-<body class="login-page">
-
-<div class="login-wrapper" style="max-width:900px">
-  <div class="login-card">
-    <h2>LOG ระบบ</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>เวลา</th>
-          <th>Action</th>
-          <th>User</th>
-        </tr>
-      </thead>
-      <tbody id="logTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังโหลด...</p>
-  </div>
-</div>
+<h2>System LOG</h2>
+<table class="table" id="tbl"></table>
 
 <script>
-const admin = JSON.parse(localStorage.getItem('it_user'));
-if(!admin || admin.role !== 'ADMIN'){
-  location.href='login.html';
-}
+const API='YOUR_GAS_URL';
+const user=JSON.parse(localStorage.getItem('it_user'));
+if(user.role!=='ADMIN') location.href='login.html';
 
-function showOverlay(){ overlay.classList.remove('hidden'); }
-function hideOverlay(){ overlay.classList.add('hidden'); }
-
-function loadLog(){
-  showOverlay();
-  jsonp(
-    GAS_URL + '?action=getLogs&admin=' + admin.userid,
-    'render'
-  );
-}
-
-function render(res){
-  hideOverlay();
-  logTable.innerHTML='';
-  res.data.forEach(l=>{
-    logTable.innerHTML += `
-      <tr>
-        <td>${l.time}</td>
-        <td>${l.action}</td>
-        <td>${l.user}</td>
-      </tr>`;
+fetch(`${API}?action=getLog&role=ADMIN`)
+.then(r=>r.json())
+.then(res=>{
+  const tbl=document.getElementById('tbl');
+  res.data.forEach(r=>{
+    tbl.innerHTML+=`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`;
   });
-}
-
-loadLog();
+});
 </script>
-
 </body>
 </html>
