@@ -1,8 +1,3 @@
-/* ===============================
-   SESSION / AUTH GUARD
-   ใช้ร่วมกันทุกหน้า
-================================ */
-
 function checkSession() {
   const session = localStorage.getItem("it_session");
   if (!session) {
