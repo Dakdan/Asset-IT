@@ -2,72 +2,65 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>IT Maintenance</title>
+  <title>Dashboard | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-
-  <!-- ✅ เช็ค session -->
-  <script>
-    const session = localStorage.getItem("it_session");
-    if (!session) {
-      location.href = "./login.html";
-    }
-  </script>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
 </head>
 
 <body>
 
+<script>
+  if (!localStorage.getItem("it_session")) {
+    location.href = "./login.html";
+  }
+</script>
+
 <div class="login-wrapper">
 
-  <!-- HEADER -->
   <div class="login-header">
-    <img src="./โรงพยาบาลอุดรธานี.png" class="header-logo">
-    <h1>โรงพยาบาลอุดรธานี</h1>
-    <p>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+    <h2>📊 IT Dashboard</h2>
   </div>
 
-  <!-- CONTENT CARD -->
   <div class="login-card">
-
-    <h2 style="text-align:center; margin-bottom:20px;">
-      📊 IT Maintenance Dashboard
-    </h2>
-
-    <!-- DASHBOARD -->
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:15px;">
-
-      <div class="card-box">
-        <h3>🛠</h3>
-        <p>งานทั้งหมด</p>
-      </div>
-
-      <div class="card-box">
-        <h3>⏳</h3>
-        <p>รอดำเนินการ</p>
-      </div>
-
-      <div class="card-box">
-        <h3>✅</h3>
-        <p>ปิดงานแล้ว</p>
-      </div>
-
+    <div class="card-box">
+      <h3>ยินดีต้อนรับ</h3>
+      <p id="userName"></p>
     </div>
 
-    <!-- ACTION -->
-    <div style="margin-top:25px;">
-      <button onclick="location.href='download.html'" class="btn-login">
-        📥 ดาวน์โหลดเอกสาร
-      </button>
-
-      <button onclick="logout()" class="btn-back">
-        ออกจากระบบ
-      </button>
-    </div>
-
+    <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
   </div>
 
 </div>
 
-<script src="./j
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังโหลด...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3>แจ้งเตือน</h3>
+    <p>-</p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/ui.js"></script>
+<script>
+const user = JSON.parse(localStorage.getItem("it_session"));
+if (user) userName.innerText = user.name;
+
+function logout() {
+  localStorage.removeItem("it_session");
+  location.href = "./login.html";
+}
+</script>
+
+</body>
+</html>
