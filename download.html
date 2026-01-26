@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Download</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h2>📂 เอกสารระบบ</h2>
+<ul id="fileList"></ul>
+
+<script src="js/main.js"></script>
+<script>
+fetch(API_URL + '?action=files')
+  .then(r => r.json())
+  .then(files => {
+    const ul = document.getElementById('fileList');
+    files.forEach(f => {
+      ul.innerHTML += `<li><a href="${f.url}" target="_blank">${f.name}</a></li>`;
+    });
+  });
+</script>
+</body>
+</html>
