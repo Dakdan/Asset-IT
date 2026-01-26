@@ -1,22 +1,73 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>IT Dashboard</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- ✅ เช็ค session -->
+  <script>
+    const session = localStorage.getItem("it_session");
+    if (!session) {
+      location.href = "./login.html";
+    }
+  </script>
 </head>
+
 <body>
 
-<h1>📊 IT Dashboard</h1>
+<div class="login-wrapper">
 
-<div class="dashboard">
-  <div class="card">🛠 งานทั้งหมด</div>
-  <div class="card">⏳ รอดำเนินการ</div>
-  <div class="card">✅ เสร็จสิ้น</div>
+  <!-- HEADER -->
+  <div class="login-header">
+    <img src="./โรงพยาบาลอุดรธานี.png" class="header-logo">
+    <h1>โรงพยาบาลอุดรธานี</h1>
+    <p>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+  </div>
+
+  <!-- CONTENT CARD -->
+  <div class="login-card">
+
+    <h2 style="text-align:center; margin-bottom:20px;">
+      📊 IT Maintenance Dashboard
+    </h2>
+
+    <!-- DASHBOARD -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:15px;">
+
+      <div class="card-box">
+        <h3>🛠</h3>
+        <p>งานทั้งหมด</p>
+      </div>
+
+      <div class="card-box">
+        <h3>⏳</h3>
+        <p>รอดำเนินการ</p>
+      </div>
+
+      <div class="card-box">
+        <h3>✅</h3>
+        <p>ปิดงานแล้ว</p>
+      </div>
+
+    </div>
+
+    <!-- ACTION -->
+    <div style="margin-top:25px;">
+      <button onclick="location.href='download.html'" class="btn-login">
+        📥 ดาวน์โหลดเอกสาร
+      </button>
+
+      <button onclick="logout()" class="btn-back">
+        ออกจากระบบ
+      </button>
+    </div>
+
+  </div>
+
 </div>
 
-<a href="download.html" class="btn">📥 ดาวน์โหลดเอกสาร</a>
-
-<script src="js/main.js"></script>
-</body>
-</html>
+<script src="./j
