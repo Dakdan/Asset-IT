@@ -2,10 +2,11 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Login - IT Maintenance</title>
+  <title>Login | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="css/style.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
@@ -20,96 +21,42 @@
     <p>ระบบซ่อมบำรุง IT</p>
   </div>
 
-  <!-- CARD -->
+  <!-- LOGIN CARD -->
   <div class="login-card">
-    <h2 style="text-align:center;margin-bottom:20px;">🔐 Login</h2>
+    <h2 style="text-align:center; margin-bottom:20px;">🔐 เข้าสู่ระบบ</h2>
 
     <div class="form-group">
-      <input id="email" type="email" placeholder="Email">
+      <input
+        id="email"
+        type="email"
+        placeholder="Email"
+        autocomplete="username"
+      >
     </div>
 
     <div class="form-group">
-      <input id="password" type="password" placeholder="Password">
+      <input
+        id="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
     </div>
 
     <button class="btn-login" onclick="login()">
       เข้าสู่ระบบ
     </button>
+
+    <div style="text-align:center; margin-top:15px;">
+      <a href="./register.html">ลงทะเบียนผู้ใช้งานใหม่</a>
+    </div>
   </div>
 
 </div>
 
-<!-- ===== OVERLAY ===== -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p id="overlayText">กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<!-- ===== POPUP ===== -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
-    <p id="popupMessage"></p>
-    <button class="btn-login" onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
-
-<script src="js/api.js"></script>
-<script src="js/main.js"></script>
-
-<script>
-/* ===== OVERLAY / POPUP ===== */
-function showOverlay(text = "กำลังดำเนินการ...") {
-  document.getElementById("overlayText").innerText = text;
-  document.getElementById("overlay").classList.remove("hidden");
-}
-
-function hideOverlay() {
-  document.getElementById("overlay").classList.add("hidden");
-}
-
-function showPopup(title, message) {
-  document.getElementById("popupTitle").innerText = title;
-  document.getElementById("popupMessage").innerText = message;
-  document.getElementById("popup").classList.remove("hidden");
-}
-
-function closePopup() {
-  document.getElementById("popup").classList.add("hidden");
-}
-
-/* ===== LOGIN ===== */
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if (!email || !password) {
-    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และ Password");
-    return;
-  }
-
-  showOverlay("กำลังตรวจสอบสิทธิ์...");
-
-  try {
-    const res = await callAPI("login", { email, password });
-
-    hideOverlay();
-
-    if (res.success) {
-      localStorage.setItem("it_session", JSON.stringify(res.user));
-      showPopup("สำเร็จ", "เข้าสู่ระบบเรียบร้อย");
-      setTimeout(() => location.href = "index.html", 1200);
-    } else {
-      showPopup("ไม่สำเร็จ", res.message);
-    }
-  } catch (err) {
-    hideOverlay();
-    showPopup("ผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้");
-  }
-}
-</script>
+<!-- JS : วางล่างสุดเท่านั้น -->
+<script src="./js/api.js"></script>
+<script src="./js/main.js"></script>
 
 </body>
 </html>
