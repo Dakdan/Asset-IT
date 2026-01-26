@@ -60,3 +60,39 @@
 
 </body>
 </html>
+// ===============================
+// LOGIN
+// ===============================
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("กรุณากรอก Email และ Password");
+    return;
+  }
+
+  // 🔵 SHOW OVERLAY
+  showOverlay("กำลังเข้าสู่ระบบ...");
+
+  try {
+    const result = await callAPI("login", {
+      email,
+      password
+    });
+
+    if (result.success) {
+      localStorage.setItem("it_session", JSON.stringify(result.user));
+      location.href = "./index.html";
+    } else {
+      alert(result.message || "Login ไม่สำเร็จ");
+    }
+
+  } catch (err) {
+    alert("ไม่สามารถเชื่อมต่อระบบได้");
+    console.error(err);
+  } finally {
+    // 🔴 HIDE OVERLAY
+    hideOverlay();
+  }
+}
