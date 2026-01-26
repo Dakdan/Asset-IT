@@ -1,47 +1,34 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>ยืนยันรหัสสมัครสมาชิก | ระบบซ่อมบำรุง IT</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>ยืนยันรหัสสมัครสมาชิก</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- STYLE หลัก (ห้ามหาย) -->
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
 <body class="login-page">
 
 <div class="login-wrapper">
-
-  <!-- HEADER -->
   <div class="login-header">
-    <h1>ยืนยันรหัสสมัครสมาชิก</h1>
-    <p>ระบบซ่อมบำรุง IT</p>
+    <h1>ยืนยันรหัส</h1>
+    <p>ตรวจสอบ Email ของคุณ</p>
   </div>
 
-  <!-- CARD -->
   <div class="login-card">
-
     <div class="form-group">
-      <input id="email" type="email" placeholder="Email ที่ใช้สมัคร">
+      <input id="email" placeholder="Email">
     </div>
-
     <div class="form-group">
-      <input id="code" placeholder="รหัสยืนยัน 6 หลัก">
+      <input id="code" placeholder="Verification Code">
     </div>
-
-    <button class="btn-login" onclick="verifyCode()">ยืนยันรหัส</button>
-
-    <div class="register-link">
-      <a href="./login.html">กลับไปหน้า Login</a>
-    </div>
-
+    <button class="btn-login" onclick="verify()">ยืนยัน</button>
   </div>
 </div>
 
-<!-- ===== OVERLAY กลางระบบ ===== -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
@@ -49,11 +36,10 @@
   </div>
 </div>
 
-<!-- ===== POPUP กลางระบบ ===== -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
     <h3>แจ้งเตือน</h3>
-    <p id="popupMsg">-</p>
+    <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
@@ -61,48 +47,34 @@
 <script src="./js/ui.js"></script>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+const GAS_URL = 'YOUR_WEBAPP_URL';
 
-function jsonp(url, cb) {
-  const s = document.createElement('script');
-  s.src = url + '&callback=' + cb;
+function jsonp(url, cb){
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
   document.body.appendChild(s);
-  setTimeout(() => s.remove(), 3000);
+  setTimeout(()=>s.remove(),3000);
 }
 
-function verifyCode() {
-  const email = document.getElementById('email').value.trim();
-  const code = document.getElementById('code').value.trim();
-
-  if (!email || !code) {
-    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และรหัสยืนยัน");
-    return;
-  }
-
-  showOverlay("กำลังตรวจสอบรหัส...");
-
+function verify(){
+  showOverlay("กำลังยืนยัน...");
   jsonp(
     GAS_URL +
     '?action=verify' +
-    '&email=' + encodeURIComponent(email) +
-    '&code=' + encodeURIComponent(code),
+    '&email=' + encodeURIComponent(email.value) +
+    '&code=' + encodeURIComponent(code.value),
     'verifyCallback'
   );
 }
 
-function verifyCallback(res) {
+function verifyCallback(res){
   hideOverlay();
-
-  if (res.success) {
-    showPopup(
-      "สำเร็จ",
-      "ยืนยันเรียบร้อยแล้ว\nรอผู้ดูแลระบบอนุมัติการใช้งาน"
-    );
-  } else {
-    showPopup("ไม่สำเร็จ", res.message || "รหัสไม่ถูกต้อง");
+  if(res.success){
+    showPopup("สำเร็จ","ยืนยันเรียบร้อย รอผู้ดูแลอนุมัติ");
+  }else{
+    showPopup("ไม่สำเร็จ",res.message);
   }
 }
 </script>
-
 </body>
 </html>
