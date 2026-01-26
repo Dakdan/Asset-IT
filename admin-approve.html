@@ -2,150 +2,111 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Admin Approve IT</title>
+<title>Admin Approval</title>
 <link rel="stylesheet" href="./css/style.css">
+<style>
+body{
+  background:#fce4ec;
+  padding:20px;
+  display:block;
+}
+h2{ margin-bottom:15px; }
+</style>
 </head>
 
 <body>
 
-<div class="login-wrapper" style="max-width:1000px">
-  <div class="login-header">
-    <h2>Admin : อนุมัติ IT</h2>
-  </div>
+<h2>👑 Admin : อนุมัติผู้ใช้งาน IT</h2>
 
-  <div class="login-card">
-    <table class="table admin-table" id="tbl">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Username</th>
-          <th>ชื่อ</th>
-          <th>นามสกุล</th>
-          <th>สถานะ</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
+<table class="table admin-table">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>ชื่อ</th>
+      <th>สกุล</th>
+      <th>Username</th>
+      <th>สถานะ</th>
+      <th>จัดการ</th>
+    </tr>
+  </thead>
+  <tbody id="list"></tbody>
+</table>
 
-<!-- OVERLAY -->
-<div class="overlay hidden" id="overlay">
+<!-- Overlay -->
+<div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <div>กำลังประมวลผล...</div>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div class="popup hidden" id="popup">
-  <div class="popup-card">
-    <p id="popupMsg"></p>
-    <button class="btn-success" onclick="closePopup()">ตกลง</button>
+    <p>กำลังดำเนินการ...</p>
   </div>
 </div>
 
 <script>
-/* ===============================
-   CONFIG
-=============================== */
-const API_URL = 'YOUR_GAS_URL';
+/************** CONFIG **************/
+const API_URL = 'YOUR_DEPLOYED_GAS_URL'; // << ใส่ URL ที่ deploy แล้ว
 
-/* ===============================
-   AUTH CHECK
-=============================== */
+/************** SESSION **************/
 const user = JSON.parse(localStorage.getItem('it_user'));
-if (!user || user.role !== 'ADMIN') {
+if(!user || user.role !== 'ADMIN'){
   location.href = 'login.html';
 }
 
-/* ===============================
-   UI
-=============================== */
-const overlay = document.getElementById('overlay');
-const popup = document.getElementById('popup');
-const popupMsg = document.getElementById('popupMsg');
-const tbody = document.querySelector('#tbl tbody');
-
-function showOverlay(show=true){
-  overlay.classList.toggle('hidden', !show);
+/************** UTIL **************/
+function showOverlay(show){
+  document.getElementById('overlay').classList.toggle('hidden', !show);
+}
+function jsonp(url){
+  return new Promise(res=>{
+    const cb = 'cb'+Date.now();
+    window[cb]=data=>{ delete window[cb]; res(data); };
+    const s=document.createElement('script');
+    s.src=url+'&callback='+cb;
+    document.body.appendChild(s);
+  });
 }
 
-function showPopup(msg){
-  popupMsg.innerText = msg;
-  popup.classList.remove('hidden');
-}
-
-function closePopup(){
-  popup.classList.add('hidden');
-  loadData();
-}
-
-/* ===============================
-   LOAD VERIFIED USERS
-=============================== */
-function loadData(){
+/************** LOAD VERIFIED **************/
+async function loadVerified(){
   showOverlay(true);
-  tbody.innerHTML = '';
+  const r = await jsonp(`${API_URL}?action=getVerified`);
+  showOverlay(false);
 
-  fetch(`${API_URL}?action=getVerified`)
-    .then(r => r.json())
-    .then(res => {
-      showOverlay(false);
+  if(!r.success) return alert(r.message);
 
-      if(!res.success){
-        showPopup(res.message);
-        return;
-      }
+  const tb = document.getElementById('list');
+  tb.innerHTML = '';
 
-      res.data.forEach(u => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td data-label="Email">${u.email}</td>
-          <td data-label="Username">${u.username}</td>
-          <td data-label="ชื่อ">${u.name}</td>
-          <td data-label="นามสกุล">${u.surname}</td>
-          <td data-label="สถานะ" class="status-true">VERIFIED</td>
-          <td data-label="จัดการ">
-            <button class="btn-success" onclick="approve('${u.email}')">
-              อนุมัติ
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    })
-    .catch(err=>{
-      showOverlay(false);
-      showPopup(err.message);
-    });
+  r.data.forEach(row=>{
+    tb.innerHTML += `
+      <tr>
+        <td data-label="Email">${row[1]}</td>
+        <td data-label="ชื่อ">${row[2]}</td>
+        <td data-label="สกุล">${row[3]}</td>
+        <td data-label="Username">${row[4]}</td>
+        <td data-label="สถานะ" class="status-true">VERIFIED</td>
+        <td data-label="จัดการ">
+          <button class="btn-success" onclick="approve('${row[1]}')">
+            อนุมัติ
+          </button>
+        </td>
+      </tr>
+    `;
+  });
 }
 
-/* ===============================
-   APPROVE
-=============================== */
-function approve(email){
-  if(!confirm('ยืนยันการอนุมัติ ?')) return;
-
+/************** APPROVE **************/
+async function approve(email){
+  if(!confirm('ยืนยันอนุมัติ '+email+' ?')) return;
   showOverlay(true);
 
-  fetch(`${API_URL}?action=approveIT&email=${encodeURIComponent(email)}&role=ADMIN`)
-    .then(r=>r.json())
-    .then(res=>{
-      showOverlay(false);
-      showPopup(res.message);
-    })
-    .catch(err=>{
-      showOverlay(false);
-      showPopup(err.message);
-    });
+  const r = await jsonp(`${API_URL}?action=approveIT&email=${encodeURIComponent(email)}`);
+  showOverlay(false);
+
+  alert(r.message);
+  if(r.success) loadVerified();
 }
 
-/* ===============================
-   INIT
-=============================== */
-loadData();
+/************** INIT **************/
+loadVerified();
 </script>
 
 </body>
