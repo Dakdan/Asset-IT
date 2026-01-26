@@ -1,28 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Verify</title>
+<title>Verify Account</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-<body>
+
+<body class="login-page">
 
 <div class="login-wrapper">
+  <div class="login-header">
+    <h1>ยืนยันตัวตน</h1>
+    <p>กรอกรหัสที่ส่งไปทาง Email</p>
+  </div>
+
   <div class="login-card">
-    <h3>ยืนยันตัวตน</h3>
-    <input id="email" placeholder="Email">
-    <input id="code" placeholder="Verification Code">
+    <div class="form-group">
+      <input id="email" placeholder="Email" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <input id="code" placeholder="Verification Code">
+    </div>
+
     <button class="btn-login" onclick="verify()">ยืนยัน</button>
+    <button class="btn-login" style="margin-top:10px;background:#999" onclick="resend()">ส่งรหัสใหม่</button>
   </div>
 </div>
 
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p id="overlayText">กำลังตรวจสอบ...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <p id="popupMsg"></p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/ui.js"></script>
+
 <script>
-const API='YOUR_GAS_URL';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+
+function jsonp(url, cb){
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
+}
+
 function verify(){
-  fetch(`${API}?action=verify&email=${email.value}&code=${code.value}`)
-    .then(r=>r.json())
-    .then(res=>alert(res.message));
+  showOverlay("กำลังยืนยัน...");
+  jsonp(
+    GAS_URL +
+    '?action=verify' +
+    '&email=' + encodeURIComponent(email.value) +
+    '&code=' + encodeURIComponent(code.value),
+    'verifyCallback'
+  );
+}
+
+function resend(){
+  showOverlay("กำลังส่งรหัสใหม่...");
+  jsonp(
+    GAS_URL +
+    '?action=resend' +
+    '&email=' + encodeURIComponent(email.value),
+    'resendCallback'
+  );
+}
+
+function verifyCallback(res){
+  hideOverlay();
+  if(res.success){
+    showPopup("สำเร็จ","ยืนยันเรียบร้อย รอ Admin อนุมัติ");
+    setTimeout(()=>location.href='login.html',2000);
+  }else{
+    showPopup("ไม่สำเร็จ",res.message);
+  }
+}
+
+function resendCallback(res){
+  hideOverlay();
+  showPopup(res.success?"สำเร็จ":"ผิดพลาด",res.message);
 }
 </script>
+
 </body>
 </html>
