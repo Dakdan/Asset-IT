@@ -1,3 +1,6 @@
+/* =============================
+   RESET / BASE
+   ============================= */
 * {
   margin: 0;
   padding: 0;
@@ -13,6 +16,9 @@ body {
   align-items: center;
 }
 
+/* =============================
+   LOGIN
+   ============================= */
 .login-wrapper {
   width: 100%;
   max-width: 450px;
@@ -61,6 +67,7 @@ input {
   border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
+  border: none;
 }
 
 .btn-login:disabled {
@@ -72,87 +79,148 @@ input {
   text-align: center;
   margin-top: 15px;
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Kanit', sans-serif;
-}
 
-body {
-  background: #fce4ec;
-  min-height: 100vh;
+/* =============================
+   OVERLAY / POPUP (สำคัญ)
+   ============================= */
+.overlay,
+.popup {
+  position: fixed;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
-.login-wrapper {
-  width: 100%;
-  max-width: 450px;
-  padding: 15px;
+.overlay {
+  background: rgba(255,255,255,.8);
 }
 
-.login-header {
-  background: linear-gradient(180deg,#800040,#ff0080);
-  color: #fff;
+.popup {
+  background: rgba(0,0,0,.45);
+}
+
+.hidden {
+  display: none;
+}
+
+.overlay-card,
+.popup-card {
+  background: #fff;
   padding: 25px;
+  border-radius: 18px;
   text-align: center;
-  border-radius: 20px 20px 0 0;
+  min-width: 260px;
 }
 
-.header-logo {
-  width: 80px;
-  height: 80px;
-  background: #fff;
+.spinner {
+  width: 45px;
+  height: 45px;
+  border: 5px solid #eee;
+  border-top: 5px solid #ff0080;
   border-radius: 50%;
-  padding: 5px;
-  margin-bottom: 10px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
 }
 
-.login-card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 0 0 20px 20px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-input {
+/* =============================
+   TABLE (ADMIN)
+   ============================= */
+.table {
   width: 100%;
-  padding: 12px;
-  border: 2px solid #ff00ff;
-  border-radius: 12px;
+  border-collapse: collapse;
 }
 
-.btn-login {
-  width: 100%;
-  padding: 15px;
-  background: #ff0080;
+.table th {
+  background: #f5f5f5;
+  padding: 10px;
+  font-weight: 500;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+/* =============================
+   STATUS
+   ============================= */
+.status-true {
+  color: #2ecc71;
+  font-weight: 500;
+}
+
+.status-false {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+/* =============================
+   BUTTON
+   ============================= */
+.btn-success {
+  background: #2ecc71;
   color: #fff;
-  border-radius: 12px;
-  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
 }
 
-.btn-login:disabled {
-  opacity: .6;
-  cursor: not-allowed;
+.btn-danger {
+  background: #e74c3c;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
 }
 
-.register-link {
-  text-align: center;
-  margin-top: 15px;
-}
+/* =============================
+   RESPONSIVE
+   ============================= */
 @media (max-width: 768px) {
-  table.admin-table {
-    font-size: 13px;
+
+  .login-wrapper {
+    max-width: 100%;
   }
 
-  table.admin-table th,
-  table.admin-table td {
-    white-space: nowrap;
+  .table thead {
+    display: none;
+  }
+
+  .table tr {
+    display: block;
+    margin-bottom: 15px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    padding: 6px 0;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-weight: 500;
+    color: #666;
+  }
+
+  .table button {
+    width: 100%;
+    margin-top: 8px;
   }
 }
