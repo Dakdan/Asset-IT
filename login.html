@@ -2,94 +2,64 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Login</title>
 <link rel="stylesheet" href="./css/style.css">
 </head>
-
-<body class="login-page">
+<body>
 
 <div class="login-wrapper">
   <div class="login-header">
-    <h1>IT Service</h1>
+    <h2>IT Service</h2>
     <p>เข้าสู่ระบบ</p>
   </div>
 
   <div class="login-card">
     <div class="form-group">
-      <input id="user" placeholder="Username">
+      <input id="email" placeholder="Email">
     </div>
     <div class="form-group">
       <input id="password" type="password" placeholder="Password">
     </div>
-    <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
+    <button class="btn-login" onclick="login()">LOGIN</button>
   </div>
 </div>
 
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
+<div class="overlay hidden" id="overlay">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <p>กำลังเข้าสู่ระบบ...</p>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p id="popupMsg"></p>
-    <button onclick="closePopup()">ตกลง</button>
+    <div>กำลังเข้าสู่ระบบ...</div>
   </div>
 </div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-
-function jsonp(url, cb){
-  const s = document.createElement('script');
-  s.src = url + '&callback=' + cb;
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
-}
-
-function showOverlay(){ overlay.classList.remove('hidden'); }
-function hideOverlay(){ overlay.classList.add('hidden'); }
-
-function showPopup(msg){
-  popupMsg.innerText = msg;
-  popup.classList.remove('hidden');
-}
-function closePopup(){
-  popup.classList.add('hidden');
-}
+const API = 'YOUR_GAS_URL';
+const overlay = document.getElementById('overlay');
 
 function login(){
-  showOverlay();
-  jsonp(
-    GAS_URL +
-    '?action=login' +
-    '&user=' + encodeURIComponent(user.value) +
-    '&password=' + encodeURIComponent(password.value),
-    'loginCallback'
-  );
-}
+  overlay.classList.remove('hidden');
 
-function loginCallback(res){
-  hideOverlay();
+  fetch(`${API}?action=login&email=${email.value}&password=${password.value}`)
+    .then(r=>r.json())
+    .then(res=>{
+      overlay.classList.add('hidden');
 
-  if(res.success){
-    localStorage.setItem('it_user', JSON.stringify(res.user));
-    if(res.forceChange){
-      location.href='change-password.html';
-    }else{
-      location.href='admin.html';
-    }
-  }else{
-    showPopup(res.message);
-  }
+      if(!res.success) return alert(res.message);
+
+      localStorage.setItem('it_user', JSON.stringify({
+        email,
+        token: res.data.token,
+        role: res.data.role
+      }));
+
+      if(res.data.forceChange){
+        location.href='change-password.html';
+      }else if(res.data.role==='ADMIN'){
+        location.href='admin-approve.html';
+      }else{
+        alert('Login success');
+      }
+    });
 }
 </script>
-
 </body>
 </html>
