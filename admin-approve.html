@@ -2,37 +2,34 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Admin Approval</title>
+<title>Admin Approve</title>
 <link rel="stylesheet" href="./css/style.css">
-<style>
-body{
-  background:#fce4ec;
-  padding:20px;
-  display:block;
-}
-h2{ margin-bottom:15px; }
-</style>
+<link rel="stylesheet" href="./css/ui.css">
 </head>
 
-<body>
+<body class="login-page">
 
-<h2>👑 Admin : อนุมัติผู้ใช้งาน IT</h2>
+<div class="login-wrapper">
+  <div class="login-card" style="max-width:900px">
 
-<table class="table admin-table">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>ชื่อ</th>
-      <th>สกุล</th>
-      <th>Username</th>
-      <th>สถานะ</th>
-      <th>จัดการ</th>
-    </tr>
-  </thead>
-  <tbody id="list"></tbody>
-</table>
+    <h2>อนุมัติผู้ใช้งาน IT</h2>
 
-<!-- Overlay -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>ชื่อ</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="tb"></tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
@@ -40,73 +37,71 @@ h2{ margin-bottom:15px; }
   </div>
 </div>
 
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle"></h3>
+    <p id="popupMsg"></p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/ui.js"></script>
+
 <script>
-/************** CONFIG **************/
-const API_URL = 'YOUR_DEPLOYED_GAS_URL'; // << ใส่ URL ที่ deploy แล้ว
-
-/************** SESSION **************/
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 const user = JSON.parse(localStorage.getItem('it_user'));
-if(!user || user.role !== 'ADMIN'){
-  location.href = 'login.html';
+
+if(!user || user.role!=='ADMIN'){
+  location.href='login.html';
 }
 
-/************** UTIL **************/
-function showOverlay(show){
-  document.getElementById('overlay').classList.toggle('hidden', !show);
+function jsonp(url, cb){
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
 }
-function jsonp(url){
-  return new Promise(res=>{
-    const cb = 'cb'+Date.now();
-    window[cb]=data=>{ delete window[cb]; res(data); };
-    const s=document.createElement('script');
-    s.src=url+'&callback='+cb;
-    document.body.appendChild(s);
+
+function load(){
+  jsonp(GAS_URL+'?action=getRegister','render');
+}
+
+function render(res){
+  if(!res.success) return;
+  tb.innerHTML='';
+  res.data.forEach(r=>{
+    if(r[10]==='ACTIVE'){
+      tb.innerHTML+=`
+        <tr>
+          <td>${r[1]}</td>
+          <td>${r[2]||'-'}</td>
+          <td class="status-true">VERIFIED</td>
+          <td>
+            <button class="btn-success" onclick="approve('${r[1]}')">
+              อนุมัติ
+            </button>
+          </td>
+        </tr>`;
+    }
   });
 }
 
-/************** LOAD VERIFIED **************/
-async function loadVerified(){
-  showOverlay(true);
-  const r = await jsonp(`${API_URL}?action=getVerified`);
-  showOverlay(false);
-
-  if(!r.success) return alert(r.message);
-
-  const tb = document.getElementById('list');
-  tb.innerHTML = '';
-
-  r.data.forEach(row=>{
-    tb.innerHTML += `
-      <tr>
-        <td data-label="Email">${row[1]}</td>
-        <td data-label="ชื่อ">${row[2]}</td>
-        <td data-label="สกุล">${row[3]}</td>
-        <td data-label="Username">${row[4]}</td>
-        <td data-label="สถานะ" class="status-true">VERIFIED</td>
-        <td data-label="จัดการ">
-          <button class="btn-success" onclick="approve('${row[1]}')">
-            อนุมัติ
-          </button>
-        </td>
-      </tr>
-    `;
-  });
+function approve(email){
+  showOverlay();
+  jsonp(
+    GAS_URL+'?action=approve&email='+encodeURIComponent(email),
+    'approveCallback'
+  );
 }
 
-/************** APPROVE **************/
-async function approve(email){
-  if(!confirm('ยืนยันอนุมัติ '+email+' ?')) return;
-  showOverlay(true);
-
-  const r = await jsonp(`${API_URL}?action=approveIT&email=${encodeURIComponent(email)}`);
-  showOverlay(false);
-
-  alert(r.message);
-  if(r.success) loadVerified();
+function approveCallback(res){
+  hideOverlay();
+  showPopup(res.success?"สำเร็จ":"ผิดพลาด",res.message);
+  load();
 }
 
-/************** INIT **************/
-loadVerified();
+load();
 </script>
 
 </body>
