@@ -2,30 +2,54 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Register</title>
+  <title>Register | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/ui.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <div class="login-wrapper">
+
+  <!-- HEADER -->
   <div class="login-header">
     <h1>ลงทะเบียนผู้ใช้งาน</h1>
+    <p>ระบบซ่อมบำรุง IT</p>
   </div>
 
+  <!-- CARD -->
   <div class="login-card">
-    <input id="r_email" placeholder="Email">
-    <input id="r_password" type="password" placeholder="Password">
-    <button class="btn-login" onclick="register()">สมัครสมาชิก</button>
+    <div class="form-group">
+      <input id="regEmail" type="email" placeholder="Email">
+    </div>
+
+    <div class="form-group">
+      <input id="regPassword" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn-login" id="regBtn" onclick="registerUser()">
+      สมัครสมาชิก
+    </button>
+
+    <div style="text-align:center;margin-top:15px;">
+      <a href="./login.html">กลับไปหน้าเข้าสู่ระบบ</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== OVERLAY (ใช้ร่วมทั้งระบบ) ========== -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังดำเนินการ...</p>
   </div>
 </div>
 
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card"><div class="spinner"></div></div>
-</div>
-
+<!-- ========== POPUP (ใช้ร่วมทั้งระบบ) ========== -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
     <h3>แจ้งเตือน</h3>
@@ -34,19 +58,61 @@
   </div>
 </div>
 
+<!-- JS -->
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
 
 <script>
-async function register() {
-  showOverlay();
-  const res = await callAPI("register", {
-    email: r_email.value,
-    password: r_password.value
-  });
-  hideOverlay();
-  showPopup("สำเร็จ", "รอการอนุมัติจากผู้ดูแล");
+async function registerUser() {
+  const email = regEmail.value.trim();
+  const password = regPassword.value.trim();
+  const btn = regBtn;
+
+  if (!email || !password) {
+    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และ Password");
+    return;
+  }
+
+  btn.disabled = true;
+  showOverlay("กำลังส่งข้อมูลลงทะเบียน...");
+
+  try {
+    const res = await callAPI("register", {
+      email,
+      password
+    });
+
+    if (res.success || res.status === "success") {
+      showPopup(
+        "สมัครสมาชิกสำเร็จ",
+        "ระบบได้บันทึกข้อมูลแล้ว\nรอการอนุมัติจากผู้ดูแล"
+      );
+
+      setTimeout(() => {
+        location.href = "./login.html";
+      }, 2000);
+
+    } else {
+      showPopup("ไม่สำเร็จ", res.message || "ไม่สามารถลงทะเบียนได้");
+    }
+
+  } catch (err) {
+    console.error(err);
+    showPopup("ผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้");
+  } finally {
+    hideOverlay();       // 🔴 จุดสำคัญ แก้ค้าง
+    btn.disabled = false;
+  }
 }
+
+// ENTER KEY
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") registerUser();
+});
+
+const regEmail = document.getElementById("regEmail");
+const regPassword = document.getElementById("regPassword");
+const regBtn = document.getElementById("regBtn");
 </script>
 
 </body>
