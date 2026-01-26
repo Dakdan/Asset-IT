@@ -2,73 +2,118 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Admin Log</title>
+<title>เข้าสู่ระบบ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
 <body class="login-page">
-<div class="login-wrapper">
-  <div class="login-card" style="max-width:900px">
-    <h2>LOG การใช้งานระบบ</h2>
 
-    <table>
-      <thead>
-        <tr>
-          <th>เวลา</th>
-          <th>Action</th>
-          <th>User</th>
-        </tr>
-      </thead>
-      <tbody id="logTable"></tbody>
-    </table>
+<div class="login-wrapper">
+  <div class="login-header">
+    <h1>IT Service</h1>
+    <p>เข้าสู่ระบบ</p>
+  </div>
+
+  <div class="login-card">
+    <div class="form-group">
+      <input id="username" placeholder="Username" autocomplete="username">
+    </div>
+
+    <div class="form-group">
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    </div>
+
+    <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
   </div>
 </div>
 
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p id="overlayText">กำลังเข้าสู่ระบบ...</p>
+  </div>
+</div>
+
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <p id="popupMsg"></p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/ui.js"></script>
+
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-const user = JSON.parse(localStorage.getItem('it_user'));
 
+/* ---------- JSONP ---------- */
 function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
+  const s = document.createElement('script');
+  s.src = url + '&callback=' + cb;
   document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
+  setTimeout(()=>s.remove(),4000);
 }
 
-function loadLog(){
-  if(!user){
-    alert('กรุณา login');
-    location.href='login.html';
+/* ---------- LOGIN ---------- */
+function login(){
+  if(!username.value || !password.value){
+    showPopup("แจ้งเตือน","กรุณากรอก Username และ Password");
     return;
   }
+
+  showOverlay("กำลังเข้าสู่ระบบ...");
 
   jsonp(
     GAS_URL +
-    '?action=getLogs' +
-    '&admin=' + user.userid,
-    'render'
+    '?action=login' +
+    '&username=' + encodeURIComponent(username.value) +
+    '&password=' + encodeURIComponent(password.value),
+    'loginCallback'
   );
 }
 
-function render(res){
-  if(!res.success){
-    alert(res.message);
+/* ---------- CALLBACK ---------- */
+function loginCallback(res){
+  hideOverlay();
+
+  if(!res || !res.success){
+    showPopup("เข้าสู่ระบบไม่สำเร็จ", res?.message || "ไม่สามารถติดต่อระบบได้");
     return;
   }
 
-  const tb=document.getElementById('logTable');
-  tb.innerHTML='';
-  res.data.forEach(l=>{
-    tb.innerHTML+=`
-      <tr>
-        <td>${new Date(l.time).toLocaleString()}</td>
-        <td>${l.action}</td>
-        <td>${l.user}</td>
-      </tr>`;
-  });
+  /* ✅ บันทึก session */
+  localStorage.setItem('it_user', JSON.stringify(res.user));
+
+  /* ✅ redirect ตาม role */
+  if(res.user.role === 'admin'){
+    location.href = 'admin-log.html';
+  }else{
+    location.href = 'index.html';
+  }
 }
 
-loadLog();
+/* ---------- AUTO LOGIN ---------- */
+(function(){
+  const u = localStorage.getItem('it_user');
+  if(u){
+    try{
+      const user = JSON.parse(u);
+      if(user.role === 'admin'){
+        location.href = 'admin-log.html';
+      }else{
+        location.href = 'index.html';
+      }
+    }catch(e){
+      localStorage.removeItem('it_user');
+    }
+  }
+})();
 </script>
+
 </body>
 </html>
