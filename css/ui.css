@@ -101,6 +101,14 @@
    RESPONSIVE TABLE (MOBILE)
    ============================= */
 @media (max-width: 768px) {
+  table.admin-table {
+    font-size: 13px;
+  }
+
+  table.admin-table th,
+  table.admin-table td {
+    white-space: nowrap;
+  }
 
   .login-wrapper {
     max-width: 100%;
@@ -135,15 +143,5 @@
   .table button {
     width: 100%;
     margin-top: 8px;
-  }
-}
-@media (max-width: 768px) {
-  table.admin-table {
-    font-size: 13px;
-  }
-
-  table.admin-table th,
-  table.admin-table td {
-    white-space: nowrap;
   }
 }
