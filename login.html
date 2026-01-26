@@ -4,141 +4,138 @@
 <meta charset="UTF-8">
 <title>ระบบซ่อมบำรุง IT</title>
 
+<!-- STYLE หลัก -->
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 
-<style>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
 <body class="login-page">
 
-<div class="box">
+<div class="login-wrapper">
 
-  <!-- LOGIN -->
-  <div id="loginBox">
-    <h2>เข้าสู่ระบบ</h2>
-    <input id="loginEmail" placeholder="Email" autocomplete="username">
-    <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password">
-    <button id="loginBtn" onclick="login()">เข้าสู่ระบบ</button>
-    <div class="link" onclick="showRegister()">สมัครสมาชิก</div>
-    <div id="loginMsg" class="msg"></div>
+  <div class="login-header">
+    <h1>ระบบซ่อมบำรุง IT</h1>
+    <p>สำหรับเจ้าหน้าที่เทคโนโลยีสารสนเทศ</p>
   </div>
 
-  <!-- REGISTER -->
-  <div id="registerBox" class="hidden">
-    <h2>สมัครสมาชิก IT</h2>
-    <input id="regName" placeholder="ชื่อ - สกุล">
-    <input id="regEmail" placeholder="Email">
-    <input id="regPassword" type="password" placeholder="Password">
-    <button id="regBtn" onclick="register()">สมัครสมาชิก</button>
-    <div class="link" onclick="showLogin()">กลับไปหน้า Login</div>
-    <div id="regMsg" class="msg"></div>
-  </div>
+  <div class="login-card">
 
+    <!-- LOGIN -->
+    <div id="loginBox">
+      <h2>เข้าสู่ระบบ</h2>
+
+      <div class="form-group">
+        <input id="loginEmail" placeholder="Email">
+      </div>
+
+      <div class="form-group">
+        <input id="loginPassword" type="password" placeholder="Password">
+      </div>
+
+      <button onclick="login()">เข้าสู่ระบบ</button>
+
+      <div class="register-link">
+        <a onclick="showRegister()">สมัครสมาชิก</a>
+      </div>
+
+      <div id="loginMsg" class="msg"></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerBox" class="hidden">
+      <h2>สมัครสมาชิก IT</h2>
+
+      <div class="form-group">
+        <input id="regName" placeholder="ชื่อ - สกุล">
+      </div>
+
+      <div class="form-group">
+        <input id="regEmail" placeholder="Email">
+      </div>
+
+      <div class="form-group">
+        <input id="regPassword" type="password" placeholder="Password">
+      </div>
+
+      <button onclick="register()">สมัครสมาชิก</button>
+
+      <div class="register-link">
+        <a onclick="showLogin()">กลับไปหน้า Login</a>
+      </div>
+
+      <div id="regMsg" class="msg"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const GAS_URL =
-'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 
-/* ================= JSONP ================= */
 function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
+  const s = document.createElement('script');
+  s.src = url + '&callback=' + cb;
   document.body.appendChild(s);
-  setTimeout(()=>s.remove(),4000);
+  setTimeout(()=>s.remove(),3000);
 }
 
-/* ================= UI ================= */
+/* UI */
 function showRegister(){
   loginBox.classList.add('hidden');
   registerBox.classList.remove('hidden');
-  clearMsg();
 }
+
 function showLogin(){
   registerBox.classList.add('hidden');
   loginBox.classList.remove('hidden');
-  clearMsg();
-}
-function clearMsg(){
-  loginMsg.innerHTML='';
-  regMsg.innerHTML='';
 }
 
-/* ================= LOGIN ================= */
+/* LOGIN */
 function login(){
-  if(!loginEmail.value || !loginPassword.value){
-    loginMsg.innerHTML='กรุณากรอก Email และ Password';
-    return;
-  }
-
-  loginBtn.disabled=true;
-  loginMsg.innerHTML='กำลังตรวจสอบข้อมูล...';
+  loginMsg.innerHTML = 'กำลังตรวจสอบ...';
 
   jsonp(
-    GAS_URL+
-    '?action=login'+
-    '&email='+encodeURIComponent(loginEmail.value)+
-    '&password='+encodeURIComponent(loginPassword.value),
+    GAS_URL +
+    '?action=login' +
+    '&email=' + encodeURIComponent(loginEmail.value) +
+    '&password=' + encodeURIComponent(loginPassword.value),
     'loginCallback'
   );
 }
 
 function loginCallback(res){
-  loginBtn.disabled=false;
-
   if(res.success){
-    loginMsg.classList.add('success');
-    loginMsg.innerHTML='เข้าสู่ระบบสำเร็จ กำลังเข้าสู่ระบบ...';
-
-    // ตัวอย่างเก็บ session
-    localStorage.setItem('it_user',JSON.stringify(res.user));
-
-    // location.href='index.html';
+    alert('ยินดีต้อนรับ ' + res.user.name);
+    // location.href = 'admin.html';
   }else{
-    loginMsg.innerHTML=res.message;
+    loginMsg.innerHTML = res.message;
   }
 }
 
-/* ================= REGISTER ================= */
+/* REGISTER */
 function register(){
-  if(!regName.value || !regEmail.value || !regPassword.value){
-    regMsg.innerHTML='กรุณากรอกข้อมูลให้ครบ';
-    return;
-  }
-
-  regBtn.disabled=true;
-  regMsg.innerHTML='กำลังส่งคำขอลงทะเบียน...';
+  regMsg.innerHTML = 'กำลังบันทึกข้อมูล...';
 
   jsonp(
-    GAS_URL+
-    '?action=register'+
-    '&name='+encodeURIComponent(regName.value)+
-    '&email='+encodeURIComponent(regEmail.value)+
-    '&password='+encodeURIComponent(regPassword.value),
+    GAS_URL +
+    '?action=register' +
+    '&name=' + encodeURIComponent(regName.value) +
+    '&email=' + encodeURIComponent(regEmail.value) +
+    '&password=' + encodeURIComponent(regPassword.value),
     'registerCallback'
   );
 }
 
 function registerCallback(res){
-  regBtn.disabled=false;
-
   if(res.success){
-    regMsg.classList.add('success');
-    regMsg.innerHTML=
-      'ลงทะเบียนสำเร็จ<br>กรุณารอการอนุมัติจากผู้ดูแลระบบ';
-    setTimeout(showLogin,2000);
+    alert(res.message);
+    showLogin();
   }else{
-    regMsg.innerHTML=res.message;
+    regMsg.innerHTML = res.message;
   }
 }
-
-/* ================= ENTER KEY ================= */
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'){
-    if(!loginBox.classList.contains('hidden')) login();
-    else register();
-  }
-});
 </script>
 
 </body>
