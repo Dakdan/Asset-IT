@@ -5,75 +5,44 @@
 <title>Admin Log</title>
 <link rel="stylesheet" href="./css/style.css">
 </head>
-<body class="login-page">
 
-<div class="login-wrapper">
-  <div class="login-card" style="max-width:900px">
-    <h2>LOG การใช้งานระบบ</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>เวลา</th>
-          <th>Action</th>
-          <th>Email</th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody id="logTable"></tbody>
-    </table>
-  </div>
-</div>
+<body>
+<h2>LOG ระบบ</h2>
+<table border="1">
+<thead>
+<tr><th>เวลา</th><th>Action</th><th>User</th></tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
 
 <script>
-const GAS_URL = '<<GAS_URL>>';
-
-(function(){
-  const role = localStorage.getItem('it_role');
-  if(role !== 'ADMIN'){
-    alert('ไม่มีสิทธิ์เข้าใช้งาน');
-    location.href = 'index.html';
-    return;
-  }
-  loadLog();
-})();
-
-function loadLog(){
-  jsonp(
-    GAS_URL +
-    '?action=getLog' +
-    '&role=ADMIN',
-    'render'
-  );
-}
-
-function render(res){
-  if(!res.success){
-    alert(res.message);
-    return;
-  }
-
-  const tb = document.getElementById('logTable');
-  tb.innerHTML = '';
-
-  const rows = res.data;
-  for(let i=1;i<rows.length;i++){
-    tb.innerHTML += `
-      <tr>
-        <td>${rows[i][0]}</td>
-        <td>${rows[i][1]}</td>
-        <td>${rows[i][2]}</td>
-        <td>${rows[i][3]}</td>
-      </tr>`;
-  }
-}
+const GAS_URL = 'YOUR_GAS_URL';
+const admin = JSON.parse(localStorage.getItem('it_user'));
 
 function jsonp(url, cb){
-  const s = document.createElement('script');
-  s.src = url + '&callback=' + cb;
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
   document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
+}
+
+jsonp(
+  GAS_URL +
+  '?action=getLogs' +
+  '&admin=' + admin.userid,
+  'render'
+);
+
+function render(res){
+  if(!res.success) return;
+  res.data.forEach(r=>{
+    tb.innerHTML += `<tr>
+      <td>${r.time}</td>
+      <td>${r.action}</td>
+      <td>${r.user}</td>
+    </tr>`;
+  });
 }
 </script>
-
 </body>
 </html>
