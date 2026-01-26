@@ -2,55 +2,151 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Admin | อนุมัติผู้ใช้งาน</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin : อนุมัติผู้ใช้งาน IT</title>
 
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #2c3e50;
+      color: #fff;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn-on {
+      background: #27ae60;
+      color: #fff;
+    }
+    .btn-off {
+      background: #c0392b;
+      color: #fff;
+    }
+    .status-true {
+      color: green;
+      font-weight: bold;
+    }
+    .status-false {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="login-wrapper">
+<h2>ระบบอนุมัติผู้ใช้งาน IT</h2>
 
-  <div class="login-header">
-    <h1>ผู้ดูแลระบบ</h1>
-    <p>อนุมัติการใช้งานระบบซ่อมบำรุง IT</p>
-  </div>
+<table>
+  <thead>
+    <tr>
+      <th>USER ID</th>
+      <th>ชื่อผู้ใช้งาน</th>
+      <th>User Login</th>
+      <th>Email</th>
+      <th>สถานะ</th>
+      <th>จัดการ</th>
+    </tr>
+  </thead>
+  <tbody id="userTable">
+    <tr>
+      <td colspan="6">กำลังโหลดข้อมูล...</td>
+    </tr>
+  </tbody>
+</table>
 
-  <div class="login-card">
-    <h2 style="text-align:center;margin-bottom:15px;">👥 รายชื่อผู้สมัคร</h2>
+<script>
+const GAS_URL = 'YOUR_DEPLOY_URL'; // <-- ใส่ URL Web App ที่ deploy แล้ว
 
-    <div id="userList">
-      <p style="text-align:center;">กำลังโหลดข้อมูล...</p>
-    </div>
+function jsonp(url, callbackName) {
+  const script = document.createElement('script');
+  script.src = url + '&callback=' + callbackName;
+  document.body.appendChild(script);
+  setTimeout(() => script.remove(), 3000);
+}
 
-    <button class="btn-login" onclick="loadUsers()">
-      🔄 โหลดข้อมูลใหม่
-    </button>
-  </div>
-</div>
+// โหลดรายชื่อ User
+function loadUsers() {
+  jsonp(
+    GAS_URL + '?action=getPendingUsers',
+    'renderUsers'
+  );
+}
 
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p id="overlayText">กำลังดำเนินการ...</p>
-  </div>
-</div>
+function renderUsers(res) {
+  const tb = document.getElementById('userTable');
+  tb.innerHTML = '';
 
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
-    <p id="popupMessage"></p>
-    <button onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
+  if (!res.success || res.data.length === 0) {
+    tb.innerHTML = '<tr><td colspan="6">ไม่พบข้อมูล</td></tr>';
+    return;
+  }
 
-<script src="./js/api.js"></script>
-<script src="./js/ui.js"></script>
-<script src="./js/admin.js"></script>
+  res.data.forEach(u => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${u.userid}</td>
+      <td>${u.name}</td>
+      <td>${u.userlogin}</td>
+      <td>${u.email}</td>
+      <td class="${u.active ? 'status-true' : 'status-false'}">
+        ${u.active ? 'ใช้งานได้' : 'รออนุมัติ'}
+      </td>
+      <td>
+        <button class="${u.active ? 'btn-off' : 'btn-on'}"
+          onclick="toggleUser('${u.userlogin}', ${!u.active})">
+          ${u.active ? 'ปิดใช้งาน' : 'อนุมัติ'}
+        </button>
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+// เปิด / ปิด User
+function toggleUser(userlogin, active) {
+  if (!confirm('ยืนยันการเปลี่ยนสถานะผู้ใช้งาน ?')) return;
+
+  jsonp(
+    GAS_URL +
+    '?action=approveUser' +
+    '&userlogin=' + encodeURIComponent(userlogin) +
+    '&active=' + active,
+    'afterApprove'
+  );
+}
+
+function afterApprove(res) {
+  if (res.success) {
+    alert('บันทึกเรียบร้อย');
+    loadUsers();
+  } else {
+    alert(res.message || 'เกิดข้อผิดพลาด');
+  }
+}
+
+loadUsers();
+</script>
 
 </body>
 </html>
