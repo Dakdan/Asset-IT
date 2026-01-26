@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Admin Log</title>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body class="login-page">
+<div class="login-wrapper">
+  <div class="login-card" style="max-width:900px">
+    <h2>LOG การใช้งานระบบ</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>เวลา</th>
+          <th>Action</th>
+          <th>User</th>
+        </tr>
+      </thead>
+      <tbody id="logTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+const user = JSON.parse(localStorage.getItem('it_user'));
+
+function jsonp(url, cb){
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
+}
+
+function loadLog(){
+  if(!user){
+    alert('กรุณา login');
+    location.href='login.html';
+    return;
+  }
+
+  jsonp(
+    GAS_URL +
+    '?action=getLogs' +
+    '&admin=' + user.userid,
+    'render'
+  );
+}
+
+function render(res){
+  if(!res.success){
+    alert(res.message);
+    return;
+  }
+
+  const tb=document.getElementById('logTable');
+  tb.innerHTML='';
+  res.data.forEach(l=>{
+    tb.innerHTML+=`
+      <tr>
+        <td>${new Date(l.time).toLocaleString()}</td>
+        <td>${l.action}</td>
+        <td>${l.user}</td>
+      </tr>`;
+  });
+}
+
+loadLog();
+</script>
+</body>
+</html>
