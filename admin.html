@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+<h2>Admin Panel</h2>
+<p id="info"></p>
+<a href="admin-log.html">ดู LOG</a>
+
+<script>
+const user = JSON.parse(localStorage.getItem('it_user'));
+if(!user || user.role !== 'ADMIN'){
+  location.href='login.html';
+}
+info.innerText = 'ยินดีต้อนรับ ' + user.name;
+</script>
+</body>
+</html>
