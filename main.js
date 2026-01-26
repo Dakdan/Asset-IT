@@ -1,1 +1,0 @@
-const API_URL='YOUR_SCRIPT_URL';
