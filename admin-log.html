@@ -6,43 +6,63 @@
 <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body>
-<h2>LOG ระบบ</h2>
-<table border="1">
-<thead>
-<tr><th>เวลา</th><th>Action</th><th>User</th></tr>
-</thead>
-<tbody id="tb"></tbody>
-</table>
+<body class="login-page">
+
+<div class="login-wrapper" style="max-width:900px">
+  <div class="login-card">
+    <h2>LOG ระบบ</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>เวลา</th>
+          <th>Action</th>
+          <th>User</th>
+        </tr>
+      </thead>
+      <tbody id="logTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังโหลด...</p>
+  </div>
+</div>
 
 <script>
-const GAS_URL = 'YOUR_GAS_URL';
 const admin = JSON.parse(localStorage.getItem('it_user'));
-
-function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
+if(!admin || admin.role !== 'ADMIN'){
+  location.href='login.html';
 }
 
-jsonp(
-  GAS_URL +
-  '?action=getLogs' +
-  '&admin=' + admin.userid,
-  'render'
-);
+function showOverlay(){ overlay.classList.remove('hidden'); }
+function hideOverlay(){ overlay.classList.add('hidden'); }
+
+function loadLog(){
+  showOverlay();
+  jsonp(
+    GAS_URL + '?action=getLogs&admin=' + admin.userid,
+    'render'
+  );
+}
 
 function render(res){
-  if(!res.success) return;
-  res.data.forEach(r=>{
-    tb.innerHTML += `<tr>
-      <td>${r.time}</td>
-      <td>${r.action}</td>
-      <td>${r.user}</td>
-    </tr>`;
+  hideOverlay();
+  logTable.innerHTML='';
+  res.data.forEach(l=>{
+    logTable.innerHTML += `
+      <tr>
+        <td>${l.time}</td>
+        <td>${l.action}</td>
+        <td>${l.user}</td>
+      </tr>`;
   });
 }
+
+loadLog();
 </script>
+
 </body>
 </html>
