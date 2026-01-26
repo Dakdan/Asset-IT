@@ -102,6 +102,34 @@ function verifyCallback(res) {
     showPopup("ไม่สำเร็จ", res.message || "รหัสไม่ถูกต้อง");
   }
 }
+  
+function login(){
+  jsonp(
+    GAS_URL +
+    '?action=login' +
+    '&user=' + loginEmail.value +
+    '&password=' + loginPassword.value,
+    'loginCallback'
+  );
+}
+
+function loginCallback(res){
+  if(res.forceChange){
+    localStorage.setItem('tmpUser', loginEmail.value);
+    location.href = 'change-password.html';
+    return;
+  }
+
+  if(res.success){
+    localStorage.setItem('it_token', res.token);
+    localStorage.setItem('it_user', JSON.stringify(res.user));
+    location.href = 'admin.html';
+  }else{
+    loginMsg.innerText = res.message;
+  }
+}
+
+
 </script>
 
 </body>
