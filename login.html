@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>ระบบซ่อมบำรุง IT</title>
+
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
 body{
-  font-family: Tahoma, sans-serif;
+  font-family:'Kanit',Tahoma,sans-serif;
   background:#f0f2f5;
   display:flex;
   justify-content:center;
@@ -22,10 +24,7 @@ body{
   border-radius:8px;
   box-shadow:0 4px 10px rgba(0,0,0,.15);
 }
-h2{
-  text-align:center;
-  margin-bottom:15px;
-}
+h2{text-align:center;margin-bottom:15px;}
 input{
   width:100%;
   padding:8px;
@@ -40,8 +39,9 @@ button{
   border-radius:4px;
   cursor:pointer;
 }
-button:hover{
-  background:#34495e;
+button:disabled{
+  background:#999;
+  cursor:not-allowed;
 }
 .link{
   text-align:center;
@@ -49,14 +49,14 @@ button:hover{
   color:#2980b9;
   cursor:pointer;
 }
-.hidden{
-  display:none;
-}
+.hidden{display:none;}
 .msg{
   text-align:center;
   margin-top:10px;
-  color:red;
+  color:#c0392b;
+  font-size:14px;
 }
+.success{color:#27ae60;}
 </style>
 </head>
 
@@ -67,9 +67,9 @@ button:hover{
   <!-- LOGIN -->
   <div id="loginBox">
     <h2>เข้าสู่ระบบ</h2>
-    <input id="loginEmail" placeholder="Email">
-    <input id="loginPassword" type="password" placeholder="Password">
-    <button onclick="login()">เข้าสู่ระบบ</button>
+    <input id="loginEmail" placeholder="Email" autocomplete="username">
+    <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="loginBtn" onclick="login()">เข้าสู่ระบบ</button>
     <div class="link" onclick="showRegister()">สมัครสมาชิก</div>
     <div id="loginMsg" class="msg"></div>
   </div>
@@ -80,7 +80,7 @@ button:hover{
     <input id="regName" placeholder="ชื่อ - สกุล">
     <input id="regEmail" placeholder="Email">
     <input id="regPassword" type="password" placeholder="Password">
-    <button onclick="register()">สมัครสมาชิก</button>
+    <button id="regBtn" onclick="register()">สมัครสมาชิก</button>
     <div class="link" onclick="showLogin()">กลับไปหน้า Login</div>
     <div id="regMsg" class="msg"></div>
   </div>
@@ -88,28 +88,42 @@ button:hover{
 </div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec'; // 🔴 ใส่ Web App URL
+const GAS_URL =
+'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 
+/* ================= JSONP ================= */
 function jsonp(url, cb){
   const s=document.createElement('script');
   s.src=url+'&callback='+cb;
   document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
+  setTimeout(()=>s.remove(),4000);
 }
 
-/* UI */
+/* ================= UI ================= */
 function showRegister(){
   loginBox.classList.add('hidden');
   registerBox.classList.remove('hidden');
+  clearMsg();
 }
 function showLogin(){
   registerBox.classList.add('hidden');
   loginBox.classList.remove('hidden');
+  clearMsg();
+}
+function clearMsg(){
+  loginMsg.innerHTML='';
+  regMsg.innerHTML='';
 }
 
-/* LOGIN */
+/* ================= LOGIN ================= */
 function login(){
-  loginMsg.innerHTML='กำลังตรวจสอบ...';
+  if(!loginEmail.value || !loginPassword.value){
+    loginMsg.innerHTML='กรุณากรอก Email และ Password';
+    return;
+  }
+
+  loginBtn.disabled=true;
+  loginMsg.innerHTML='กำลังตรวจสอบข้อมูล...';
 
   jsonp(
     GAS_URL+
@@ -121,18 +135,30 @@ function login(){
 }
 
 function loginCallback(res){
+  loginBtn.disabled=false;
+
   if(res.success){
-    alert('ยินดีต้อนรับ '+res.user.name);
-    // 👉 เปลี่ยนหน้าได้ตามต้องการ
-    // location.href = 'dashboard.html';
+    loginMsg.classList.add('success');
+    loginMsg.innerHTML='เข้าสู่ระบบสำเร็จ กำลังเข้าสู่ระบบ...';
+
+    // ตัวอย่างเก็บ session
+    localStorage.setItem('it_user',JSON.stringify(res.user));
+
+    // location.href='index.html';
   }else{
     loginMsg.innerHTML=res.message;
   }
 }
 
-/* REGISTER */
+/* ================= REGISTER ================= */
 function register(){
-  regMsg.innerHTML='กำลังบันทึกข้อมูล...';
+  if(!regName.value || !regEmail.value || !regPassword.value){
+    regMsg.innerHTML='กรุณากรอกข้อมูลให้ครบ';
+    return;
+  }
+
+  regBtn.disabled=true;
+  regMsg.innerHTML='กำลังส่งคำขอลงทะเบียน...';
 
   jsonp(
     GAS_URL+
@@ -145,13 +171,25 @@ function register(){
 }
 
 function registerCallback(res){
+  regBtn.disabled=false;
+
   if(res.success){
-    alert(res.message);
-    showLogin();
+    regMsg.classList.add('success');
+    regMsg.innerHTML=
+      'ลงทะเบียนสำเร็จ<br>กรุณารอการอนุมัติจากผู้ดูแลระบบ';
+    setTimeout(showLogin,2000);
   }else{
     regMsg.innerHTML=res.message;
   }
 }
+
+/* ================= ENTER KEY ================= */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    if(!loginBox.classList.contains('hidden')) login();
+    else register();
+  }
+});
 </script>
 
 </body>
