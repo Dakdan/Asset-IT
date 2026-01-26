@@ -1,178 +1,84 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin : อนุมัติผู้ใช้งาน IT</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Admin : อนุมัติผู้ใช้งาน</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- STYLE หลัก (ห้ามหาย) -->
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-
-  <!-- FIX เฉพาะหน้านี้ (ไม่กระทบหน้าอื่น) -->
-  <style>
-    .admin-card {
-      width: 100%;
-      max-width: 1000px;
-      display: block !important;
-      overflow: auto !important;
-    }
-
-    table.admin-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    table.admin-table th,
-    table.admin-table td {
-      padding: 10px;
-      border-bottom: 1px solid #e0e0e0;
-      text-align: left;
-      font-size: 14px;
-    }
-
-    table.admin-table th {
-      background: #f5f6f8;
-      font-weight: 500;
-    }
-
-    .status-true {
-      color: #2e7d32;
-      font-weight: 500;
-    }
-
-    .status-false {
-      color: #c62828;
-      font-weight: 500;
-    }
-  </style>
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
 <body class="login-page">
 
 <div class="login-wrapper">
-
-  <!-- HEADER -->
   <div class="login-header">
-    <h1>อนุมัติผู้ใช้งาน IT</h1>
-    <p>ระบบซ่อมบำรุง IT</p>
+    <h1>อนุมัติผู้ใช้งาน</h1>
   </div>
 
-  <!-- CARD -->
   <div class="login-card admin-card">
-
     <table class="admin-table">
       <thead>
         <tr>
-          <th>USER ID</th>
-          <th>ชื่อผู้ใช้งาน</th>
-          <th>User Login</th>
           <th>Email</th>
-          <th>สถานะ</th>
+          <th>User</th>
+          <th>Status</th>
           <th>จัดการ</th>
         </tr>
       </thead>
-      <tbody id="userTable">
-        <tr>
-          <td colspan="6" style="text-align:center;">กำลังโหลดข้อมูล...</td>
-        </tr>
-      </tbody>
+      <tbody id="tb"></tbody>
     </table>
-
   </div>
 </div>
 
-<!-- ===== OVERLAY กลางระบบ ===== -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<!-- ===== POPUP กลางระบบ ===== -->
+<div id="overlay" class="overlay hidden"></div>
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p id="popupMsg">-</p>
+    <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
 <script src="./js/ui.js"></script>
-
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+const GAS_URL='YOUR_WEBAPP_URL';
 
-function jsonp(url, cb) {
-  const s = document.createElement('script');
-  s.src = url + '&callback=' + cb;
+function jsonp(u,c){
+  const s=document.createElement('script');
+  s.src=u+'&callback='+c;
   document.body.appendChild(s);
-  setTimeout(() => s.remove(), 3000);
+  setTimeout(()=>s.remove(),3000);
 }
 
-function loadUsers() {
-  showOverlay("กำลังโหลดข้อมูลผู้ใช้งาน...");
-  jsonp(GAS_URL + '?action=getPendingUsers', 'renderUsers');
+function load(){
+  jsonp(GAS_URL+'?action=getPendingUsers','render');
 }
 
-function renderUsers(res) {
-  hideOverlay();
-  const tb = document.getElementById('userTable');
-  tb.innerHTML = '';
-
-  if (!res.success || res.data.length === 0) {
-    tb.innerHTML = `<tr><td colspan="6" style="text-align:center;">ไม่พบข้อมูล</td></tr>`;
-    return;
-  }
-
-  res.data.forEach(u => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${u.userid}</td>
-      <td>${u.name}</td>
-      <td>${u.userlogin}</td>
-      <td>${u.email}</td>
-      <td>
-        <span class="${u.active ? 'status-true' : 'status-false'}">
-          ${u.active ? 'ใช้งานได้' : 'รออนุมัติ'}
-        </span>
-      </td>
-      <td>
-        <button class="${u.active ? 'btn-danger' : 'btn-success'}"
-          onclick="toggleUser('${u.userlogin}', ${!u.active})">
-          ${u.active ? 'ปิดใช้งาน' : 'อนุมัติ'}
-        </button>
-      </td>
-    `;
-    tb.appendChild(tr);
+function render(res){
+  tb.innerHTML='';
+  res.data.forEach(u=>{
+    tb.innerHTML+=`
+      <tr>
+        <td>${u.email}</td>
+        <td>${u.user}</td>
+        <td>${u.status}</td>
+        <td>
+          <button onclick="approve('${u.email}')">อนุมัติ</button>
+        </td>
+      </tr>`;
   });
 }
 
-function toggleUser(userlogin, active) {
-  showOverlay("กำลังบันทึกสถานะ...");
-  jsonp(
-    GAS_URL +
-    '?action=approveUser' +
-    '&userlogin=' + encodeURIComponent(userlogin) +
-    '&active=' + active,
-    'afterApprove'
-  );
+function approve(email){
+  jsonp(GAS_URL+'?action=approve&email='+email,'after');
 }
 
-function afterApprove(res) {
-  hideOverlay();
-  if (res.success) {
-    showPopup("สำเร็จ", "บันทึกสถานะผู้ใช้งานเรียบร้อยแล้ว");
-    loadUsers();
-  } else {
-    showPopup("ผิดพลาด", res.message || "ไม่สามารถบันทึกได้");
-  }
+function after(){
+  showPopup("สำเร็จ","อนุมัติแล้ว");
+  load();
 }
-
-loadUsers();
+load();
 </script>
-
 </body>
 </html>
