@@ -1,1 +1,101 @@
-<!DOCTYPE html><html><head><title>Register</title></head><body>Register Page</body></html>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body class="login-page">
+
+<div class="login-wrapper">
+
+  <div class="login-header">
+    <img src="./โรงพยาบาลอุดรธานี.png" class="header-logo">
+    <h1>โรงพยาบาลอุดรธานี</h1>
+    <p>ลงทะเบียนเจ้าหน้าที่ IT</p>
+  </div>
+
+  <div class="login-card">
+    <h2 style="text-align:center;margin-bottom:20px;">📝 ลงทะเบียน</h2>
+
+    <div class="form-group">
+      <input id="fullname" placeholder="ชื่อ – สกุล">
+    </div>
+
+    <div class="form-group">
+      <input id="email" type="email" placeholder="Email">
+    </div>
+
+    <div class="form-group">
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn-login" id="registerBtn" onclick="register()">
+      สมัครสมาชิก
+    </button>
+
+    <div style="text-align:center;margin-top:15px;">
+      <a href="./login.html">กลับหน้า Login</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังดำเนินการ...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3>แจ้งเตือน</h3>
+    <p>-</p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
+
+<script>
+async function register() {
+  const btn = document.getElementById("registerBtn");
+  const full_name = fullname.value.trim();
+  const email = email.value.trim();
+  const password = password.value.trim();
+
+  if (!full_name || !email || !password) {
+    showPopup("ข้อมูลไม่ครบ", "กรุณากรอกข้อมูลให้ครบ");
+    return;
+  }
+
+  btn.disabled = true;
+  showOverlay("กำลังสมัครสมาชิก...");
+
+  try {
+    const res = await callAPI("register", { full_name, email, password });
+    if (res.success) {
+      showPopup("สำเร็จ", "ลงทะเบียนเรียบร้อย กรุณารออนุมัติ");
+    } else {
+      showPopup("ไม่สำเร็จ", res.message);
+    }
+  } catch {
+    showPopup("ผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้");
+  } finally {
+    hideOverlay();
+    btn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>
