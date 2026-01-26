@@ -1,98 +1,155 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Login | IT Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
+<meta charset="UTF-8">
+<title>ระบบซ่อมบำรุง IT</title>
+
+<style>
+body{
+  font-family: Tahoma, sans-serif;
+  background:#f0f2f5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  width:380px;
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+h2{
+  text-align:center;
+  margin-bottom:15px;
+}
+input{
+  width:100%;
+  padding:8px;
+  margin:6px 0;
+}
+button{
+  width:100%;
+  padding:10px;
+  background:#2c3e50;
+  color:#fff;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+}
+button:hover{
+  background:#34495e;
+}
+.link{
+  text-align:center;
+  margin-top:10px;
+  color:#2980b9;
+  cursor:pointer;
+}
+.hidden{
+  display:none;
+}
+.msg{
+  text-align:center;
+  margin-top:10px;
+  color:red;
+}
+</style>
 </head>
 
 <body>
 
-<div class="login-wrapper">
-  <div class="login-header">
-    <img src="./โรงพยาบาลอุดรธานี.png" class="header-logo">
-    <h1>โรงพยาบาลอุดรธานี</h1>
-    <p>ระบบซ่อมบำรุง IT</p>
+<div class="box">
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>เข้าสู่ระบบ</h2>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button onclick="login()">เข้าสู่ระบบ</button>
+    <div class="link" onclick="showRegister()">สมัครสมาชิก</div>
+    <div id="loginMsg" class="msg"></div>
   </div>
 
-  <div class="login-card">
-    <h2 style="text-align:center;">🔐 เข้าสู่ระบบ</h2>
-
-    <div class="form-group">
-      <input id="email" type="email" placeholder="Email">
-    </div>
-
-    <div class="form-group">
-      <input id="password" type="password" placeholder="Password">
-    </div>
-
-    <button class="btn-login" id="loginBtn" onclick="login()">เข้าสู่ระบบ</button>
-
-    <div style="text-align:center;margin-top:15px;">
-      <a href="./register.html">ลงทะเบียนผู้ใช้งานใหม่</a>
-    </div>
+  <!-- REGISTER -->
+  <div id="registerBox" class="hidden">
+    <h2>สมัครสมาชิก IT</h2>
+    <input id="regName" placeholder="ชื่อ - สกุล">
+    <input id="regEmail" placeholder="Email">
+    <input id="regPassword" type="password" placeholder="Password">
+    <button onclick="register()">สมัครสมาชิก</button>
+    <div class="link" onclick="showLogin()">กลับไปหน้า Login</div>
+    <div id="regMsg" class="msg"></div>
   </div>
+
 </div>
-
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p>-</p>
-    <button onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
-
-<script src="./js/api.js"></script>
-<script src="./js/ui.js"></script>
 
 <script>
-async function login() {
-  const email = emailEl.value.trim();
-  const password = passwordEl.value.trim();
-  const btn = loginBtn;
+const GAS_URL = 'YOUR_DEPLOY_URL'; // 🔴 ใส่ Web App URL
 
-  if (!email || !password) {
-    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และ Password");
-    return;
-  }
+function jsonp(url, cb){
+  const s=document.createElement('script');
+  s.src=url+'&callback='+cb;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
+}
 
-  btn.disabled = true;
-  showOverlay("กำลังเข้าสู่ระบบ...");
+/* UI */
+function showRegister(){
+  loginBox.classList.add('hidden');
+  registerBox.classList.remove('hidden');
+}
+function showLogin(){
+  registerBox.classList.add('hidden');
+  loginBox.classList.remove('hidden');
+}
 
-  try {
-    const res = await callAPI("login", { email, password });
-    if (res.success) {
-      localStorage.setItem("it_session", JSON.stringify(res.user));
-      location.href = "./index.html";
-    } else {
-      showPopup("เข้าสู่ระบบไม่สำเร็จ", res.message);
-    }
-  } catch {
-    showPopup("ผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้");
-  } finally {
-    hideOverlay();
-    btn.disabled = false;
+/* LOGIN */
+function login(){
+  loginMsg.innerHTML='กำลังตรวจสอบ...';
+
+  jsonp(
+    GAS_URL+
+    '?action=login'+
+    '&email='+encodeURIComponent(loginEmail.value)+
+    '&password='+encodeURIComponent(loginPassword.value),
+    'loginCallback'
+  );
+}
+
+function loginCallback(res){
+  if(res.success){
+    alert('ยินดีต้อนรับ '+res.user.name);
+    // 👉 เปลี่ยนหน้าได้ตามต้องการ
+    // location.href = 'dashboard.html';
+  }else{
+    loginMsg.innerHTML=res.message;
   }
 }
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter") login();
-});
+/* REGISTER */
+function register(){
+  regMsg.innerHTML='กำลังบันทึกข้อมูล...';
 
-const emailEl = document.getElementById("email");
-const passwordEl = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
+  jsonp(
+    GAS_URL+
+    '?action=register'+
+    '&name='+encodeURIComponent(regName.value)+
+    '&email='+encodeURIComponent(regEmail.value)+
+    '&password='+encodeURIComponent(regPassword.value),
+    'registerCallback'
+  );
+}
+
+function registerCallback(res){
+  if(res.success){
+    alert(res.message);
+    showLogin();
+  }else{
+    regMsg.innerHTML=res.message;
+  }
+}
 </script>
 
 </body>
