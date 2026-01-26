@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>รายการงานซ่อม</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- เช็ค session -->
+  <script>
+    const session = localStorage.getItem("it_session");
+    if (!session) location.href = "./login.html";
+  </script>
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+  <!-- HEADER -->
+  <div class="login-header">
+    <img src="./โรงพยาบาลอุดรธานี.png" class="header-logo">
+    <h1>โรงพยาบาลอุดรธานี</h1>
+    <p>รายการงานซ่อมบำรุง IT</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="login-card">
+    <h2 style="margin-bottom:15px;">📋 งานที่รอรับ</h2>
+
+    <div id="ticketList"></div>
+
+    <button onclick="location.href='index.html'" class="btn-back">
+      ⬅ กลับหน้าหลัก
+    </button>
+  </div>
+
+</div>
+
+<script src="./js/api.js"></script>
+<script src="./js/main.js"></script>
+
+<script>
+const API = API_URL; // จาก main.js
+const user = JSON.parse(localStorage.getItem("it_session"));
+
+fetch(API + '?action=getTickets')
+  .then(r => r.json())
+  .then(tickets => {
+    const box = document.getElementById('ticketList');
+    if (!tickets.length) {
+      box.innerHTML = "<p>🎉 ไม่มีงานค้าง</p>";
+      return;
+    }
+
+    tickets.forEach(t => {
+      box.innerHTML += `
+        <div class="ticket-card">
+          <b>${t.issue_title}</b>
+          <p>ครุภัณฑ์: ${t.asset_id}</p>
+          <p>สถานะ: ${t.status}</p>
+
+          ${t.assigned_to ? '' :
+            `<button onclick="acceptJob('${t.ticket_id}')" class="btn-login">
+              รับงาน
+            </button>`}
+        </div>
+      `;
+    });
+  });
+
+function acceptJob(ticketId) {
+  fetch(API, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'acceptTicket',
+      ticket_id: ticketId,
+      user_id: user.user_id
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    alert("รับงานเรียบร้อย");
+    location.reload();
+  });
+}
+</script>
+
+</body>
+</html>
