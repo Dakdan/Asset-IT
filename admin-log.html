@@ -5,8 +5,8 @@
 <title>Admin Log</title>
 <link rel="stylesheet" href="./css/style.css">
 </head>
-
 <body class="login-page">
+
 <div class="login-wrapper">
   <div class="login-card" style="max-width:900px">
     <h2>LOG การใช้งานระบบ</h2>
@@ -16,7 +16,8 @@
         <tr>
           <th>เวลา</th>
           <th>Action</th>
-          <th>User</th>
+          <th>Email</th>
+          <th>Detail</th>
         </tr>
       </thead>
       <tbody id="logTable"></tbody>
@@ -25,27 +26,23 @@
 </div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-const user = JSON.parse(localStorage.getItem('it_user'));
+const GAS_URL = '<<GAS_URL>>';
 
-function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
-}
-
-function loadLog(){
-  if(!user){
-    alert('กรุณา login');
-    location.href='login.html';
+(function(){
+  const role = localStorage.getItem('it_role');
+  if(role !== 'ADMIN'){
+    alert('ไม่มีสิทธิ์เข้าใช้งาน');
+    location.href = 'index.html';
     return;
   }
+  loadLog();
+})();
 
+function loadLog(){
   jsonp(
     GAS_URL +
-    '?action=getLogs' +
-    '&admin=' + user.userid,
+    '?action=getLog' +
+    '&role=ADMIN',
     'render'
   );
 }
@@ -56,19 +53,27 @@ function render(res){
     return;
   }
 
-  const tb=document.getElementById('logTable');
-  tb.innerHTML='';
-  res.data.forEach(l=>{
-    tb.innerHTML+=`
+  const tb = document.getElementById('logTable');
+  tb.innerHTML = '';
+
+  const rows = res.data;
+  for(let i=1;i<rows.length;i++){
+    tb.innerHTML += `
       <tr>
-        <td>${new Date(l.time).toLocaleString()}</td>
-        <td>${l.action}</td>
-        <td>${l.user}</td>
+        <td>${rows[i][0]}</td>
+        <td>${rows[i][1]}</td>
+        <td>${rows[i][2]}</td>
+        <td>${rows[i][3]}</td>
       </tr>`;
-  });
+  }
 }
 
-loadLog();
+function jsonp(url, cb){
+  const s = document.createElement('script');
+  s.src = url + '&callback=' + cb;
+  document.body.appendChild(s);
+}
 </script>
+
 </body>
 </html>
