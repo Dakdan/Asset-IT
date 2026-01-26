@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <title>Login | IT Service</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
 </head>
 
 <body class="login-page">
+
 <div class="login-wrapper">
   <div class="login-header">
     <h1>เข้าสู่ระบบ</h1>
@@ -22,22 +24,27 @@
     <div class="form-group">
       <input id="password" type="password" placeholder="Password">
     </div>
+
     <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
-    <p id="msg" class="text-center"></p>
+    <p id="msg" style="color:red;text-align:center"></p>
   </div>
 </div>
 
 <script>
-const GAS_URL = 'YOUR_GAS_URL';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 
+/* JSONP */
 function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
+  const s = document.createElement('script');
+  s.src = url + '&callback=' + cb;
   document.body.appendChild(s);
   setTimeout(()=>s.remove(),3000);
 }
 
+/* LOGIN */
 function login(){
+  msg.innerText = '';
+
   jsonp(
     GAS_URL +
     '?action=login' +
@@ -56,12 +63,15 @@ function loginCallback(res){
 
   if(res.success){
     localStorage.setItem('it_user', JSON.stringify(res.user));
-    localStorage.setItem('it_token', res.token || '');
+    if(res.token){
+      localStorage.setItem('it_token', res.token);
+    }
     location.href = 'admin.html';
   }else{
-    msg.innerText = res.message;
+    msg.innerText = res.message || 'เข้าสู่ระบบไม่สำเร็จ';
   }
 }
 </script>
+
 </body>
 </html>
