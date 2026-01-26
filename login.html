@@ -2,19 +2,17 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Login | IT Service</title>
+<title>Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
 </head>
 
 <body class="login-page">
 
 <div class="login-wrapper">
   <div class="login-header">
-    <h1>เข้าสู่ระบบ</h1>
-    <p>ระบบซ่อมบำรุง IT</p>
+    <h1>IT Service</h1>
+    <p>เข้าสู่ระบบ</p>
   </div>
 
   <div class="login-card">
@@ -24,16 +22,30 @@
     <div class="form-group">
       <input id="password" type="password" placeholder="Password">
     </div>
-
     <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
-    <p id="msg" style="color:red;text-align:center"></p>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังเข้าสู่ระบบ...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3>แจ้งเตือน</h3>
+    <p id="popupMsg"></p>
+    <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 
-/* JSONP */
 function jsonp(url, cb){
   const s = document.createElement('script');
   s.src = url + '&callback=' + cb;
@@ -41,10 +53,19 @@ function jsonp(url, cb){
   setTimeout(()=>s.remove(),3000);
 }
 
-/* LOGIN */
-function login(){
-  msg.innerText = '';
+function showOverlay(){ overlay.classList.remove('hidden'); }
+function hideOverlay(){ overlay.classList.add('hidden'); }
 
+function showPopup(msg){
+  popupMsg.innerText = msg;
+  popup.classList.remove('hidden');
+}
+function closePopup(){
+  popup.classList.add('hidden');
+}
+
+function login(){
+  showOverlay();
   jsonp(
     GAS_URL +
     '?action=login' +
@@ -55,20 +76,17 @@ function login(){
 }
 
 function loginCallback(res){
-  if(res.forceChange){
-    localStorage.setItem('tmpUser', user.value);
-    location.href = 'change-password.html';
-    return;
-  }
+  hideOverlay();
 
   if(res.success){
     localStorage.setItem('it_user', JSON.stringify(res.user));
-    if(res.token){
-      localStorage.setItem('it_token', res.token);
+    if(res.forceChange){
+      location.href='change-password.html';
+    }else{
+      location.href='admin.html';
     }
-    location.href = 'admin.html';
   }else{
-    msg.innerText = res.message || 'เข้าสู่ระบบไม่สำเร็จ';
+    showPopup(res.message);
   }
 }
 </script>
