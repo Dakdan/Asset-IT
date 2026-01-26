@@ -3,20 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body>
-<h2>Admin Panel</h2>
-<p id="info"></p>
-<a href="admin-log.html">ดู LOG</a>
+<body class="login-page">
+
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>Admin Panel</h2>
+    <p id="info"></p>
+
+    <a href="admin-log.html">📊 ดู LOG ระบบ</a>
+    <br><br>
+    <button onclick="logout()">ออกจากระบบ</button>
+  </div>
+</div>
 
 <script>
-const user = JSON.parse(localStorage.getItem('it_user'));
-if(!user || user.role !== 'ADMIN'){
-  location.href='login.html';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+
+function jsonp(url, cb){
+  const s = document.createElement('script');
+  s.src = url + '&callback=' + cb;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
 }
+
+/* LOAD USER */
+let user = null;
+try {
+  user = JSON.parse(localStorage.getItem('it_user'));
+} catch(e){}
+
+/* BASIC GUARD */
+if(!user || user.role !== 'ADMIN'){
+  location.href = 'login.html';
+}
+
+/* OPTIONAL: CHECK SESSION */
+const token = localStorage.getItem('it_token');
+if(token){
+  jsonp(
+    GAS_URL + '?action=checkSession&token=' + encodeURIComponent(token),
+    'sessionCallback'
+  );
+}
+
+function sessionCallback(res){
+  if(!res.success){
+    logout();
+  }
+}
+
 info.innerText = 'ยินดีต้อนรับ ' + user.name;
+
+/* LOGOUT */
+function logout(){
+  localStorage.removeItem('it_user');
+  localStorage.removeItem('it_token');
+  location.href = 'login.html';
+}
 </script>
+
 </body>
 </html>
