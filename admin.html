@@ -2,83 +2,48 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Admin : อนุมัติผู้ใช้งาน</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Admin Log</title>
 <link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-
 <body class="login-page">
 
 <div class="login-wrapper">
-  <div class="login-header">
-    <h1>อนุมัติผู้ใช้งาน</h1>
-  </div>
+<div class="login-card" style="max-width:900px">
 
-  <div class="login-card admin-card">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>User</th>
-          <th>Status</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody id="tb"></tbody>
-    </table>
-  </div>
+<h2>LOG การใช้งานระบบ</h2>
+
+<table>
+<thead>
+<tr><th>เวลา</th><th>Action</th><th>User</th></tr>
+</thead>
+<tbody id="logTable"></tbody>
+</table>
+
+</div>
 </div>
 
-<div id="overlay" class="overlay hidden"></div>
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <p id="popupMsg"></p>
-    <button onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
-
-<script src="./js/ui.js"></script>
 <script>
-const GAS_URL='https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-
-function jsonp(u,c){
-  const s=document.createElement('script');
-  s.src=u+'&callback='+c;
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
-}
-
-function load(){
-  jsonp(GAS_URL+'?action=getPendingUsers','render');
+function loadLog(){
+  const admin = JSON.parse(localStorage.getItem('it_user')).userid;
+  jsonp(
+    GAS_URL + '?action=getLogs&admin=' + admin,
+    'render'
+  );
 }
 
 function render(res){
+  const tb = document.getElementById('logTable');
   tb.innerHTML='';
-  res.data.forEach(u=>{
-    tb.innerHTML+=`
-      <tr>
-        <td>${u.email}</td>
-        <td>${u.user}</td>
-        <td>${u.status}</td>
-        <td>
-          <button onclick="approve('${u.email}')">อนุมัติ</button>
-        </td>
-      </tr>`;
+  res.data.forEach(l=>{
+    tb.innerHTML += `<tr>
+      <td>${l.time}</td>
+      <td>${l.action}</td>
+      <td>${l.user}</td>
+    </tr>`;
   });
 }
-
-function approve(email){
-  jsonp(GAS_URL+'?action=approve&email='+email,'after');
-}
-
-function after(){
-  showPopup("สำเร็จ","อนุมัติแล้ว");
-  load();
-}
-load();
+loadLog();
 </script>
+
 </body>
 </html>
