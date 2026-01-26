@@ -32,3 +32,20 @@ function checkSession() {
     location.href = "./login.html";
   }
 }
+// ===============================
+// OVERLAY CONTROL
+// ===============================
+function showOverlay(message = "กำลังดำเนินการ...") {
+  const overlay = document.getElementById("overlay");
+  if (!overlay) return;
+
+  overlay.querySelector("p").innerText = message;
+  overlay.classList.remove("hidden");
+}
+
+function hideOverlay() {
+  const overlay = document.getElementById("overlay");
+  if (!overlay) return;
+
+  overlay.classList.add("hidden");
+}
