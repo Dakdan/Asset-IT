@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>IT Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
 </head>
 
 <body>
@@ -35,49 +33,54 @@
 </div>
 
 <script>
-/* 🔧 แก้ตรงนี้ */
+/** 🔴 ใส่ URL GAS ของคุณตรงนี้ */
 const API = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
 
+const overlay = document.getElementById('overlay');
 const emailEl = document.getElementById('email');
 const passwordEl = document.getElementById('password');
-const overlay = document.getElementById('overlay');
 
-function login(){
-  if(!emailEl.value || !passwordEl.value){
+function login() {
+  const email = emailEl.value.trim();
+  const password = passwordEl.value.trim();
+
+  if (!email || !password) {
     alert('กรุณากรอก Email และ Password');
     return;
   }
 
   overlay.classList.remove('hidden');
 
-  fetch(`${API}?action=login&email=${encodeURIComponent(emailEl.value)}&password=${encodeURIComponent(passwordEl.value)}`)
+  fetch(`${API}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`)
     .then(r => r.json())
     .then(res => {
       overlay.classList.add('hidden');
 
-      if(!res.success){
+      if (!res.ok) {
         alert(res.message || 'Login failed');
         return;
       }
 
+      // ✅ เก็บข้อมูลถูกต้อง
       localStorage.setItem('it_user', JSON.stringify({
-        email: res.data.email,
+        email: email,
         token: res.data.token,
         role: res.data.role
       }));
 
-      if(res.data.forceChange){
+      // ✅ flow เดิมของคุณ
+      if (res.data.forceChange === true) {
         location.href = 'change-password.html';
-      }else if(res.data.role === 'ADMIN'){
+      } else if (res.data.role === 'ADMIN') {
         location.href = 'admin-approve.html';
-      }else{
-        location.href = 'dashboard.html';
+      } else {
+        alert('Login success');
       }
     })
-    .catch(err=>{
+    .catch(err => {
       overlay.classList.add('hidden');
-      alert('เชื่อมต่อระบบไม่ได้');
       console.error(err);
+      alert('ไม่สามารถเชื่อมต่อระบบได้');
     });
 }
 </script>
