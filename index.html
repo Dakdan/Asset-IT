@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard | IT Maintenance</title>
+  <title>IT Maintenance | Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="./css/style.css">
@@ -10,22 +10,76 @@
 <body>
 
 <script>
-const session = localStorage.getItem("it_session");
-if(!session){
-  location.href="login.html";
-}
+  // 🔐 Guard หน้า
+  const session = localStorage.getItem("it_session");
+  if (!session) {
+    location.href = "login.html";
+  }
 </script>
 
-<div style="padding:20px">
-  <h2>ยินดีต้อนรับเข้าสู่ระบบ</h2>
-  <button onclick="logout()">Logout</button>
+<div class="login-wrapper">
+
+  <!-- HEADER -->
+  <div class="login-header">
+    <div class="logo-box">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
+      <div class="logo-text">
+        <h2>โรงพยาบาลอุดรธานี</h2>
+        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="login-card">
+
+    <h3>📊 Dashboard</h3>
+    <p style="margin-bottom:16px;">
+      ยินดีต้อนรับคุณ <b id="userName">-</b>
+    </p>
+
+    <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
+
+  </div>
+
 </div>
 
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังดำเนินการ...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <p id="popupMsg"></p>
+    <button class="btn-login" onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/ui.js"></script>
+
 <script>
-function logout(){
-  localStorage.removeItem("it_session");
-  location.href="login.html";
-}
+  // แสดงชื่อผู้ใช้
+  const user = JSON.parse(localStorage.getItem("it_session"));
+  if (user && user.name) {
+    document.getElementById("userName").innerText = user.name;
+  } else {
+    document.getElementById("userName").innerText = "ผู้ใช้งานระบบ";
+  }
+
+  function logout(){
+    showOverlay();
+    setTimeout(()=>{
+      localStorage.removeItem("it_session");
+      location.href = "login.html";
+    }, 600);
+  }
 </script>
 
 </body>
