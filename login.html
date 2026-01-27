@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Login | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -26,18 +27,19 @@
   <div class="login-card">
 
     <div class="form-group">
-      <input id="email" placeholder="Email">
+      <input id="email" placeholder="📧 Email">
     </div>
 
     <div class="form-group">
-      <input id="password" type="password" placeholder="Password">
+      <input id="password" type="password" placeholder="🔑 Password">
     </div>
 
-    <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
+    <button class="btn-login" onclick="login()">
+      🔐 เข้าสู่ระบบ
+    </button>
 
     <div class="register-link">
-      <a href="forgot.html">ลืมรหัสผ่าน?</a><br>
-      ยังไม่มีบัญชี? <a href="register.html">ลงทะเบียน</a>
+      <a href="reset-password.html">ลืมรหัสผ่าน ?</a>
     </div>
 
   </div>
@@ -54,21 +56,21 @@
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
+    <h3 id="popupTitle">แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
-<script src="./js/core.js"></script>
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
 
 <script>
-/* auto redirect if session exists */
-if(sessionStorage.getItem('user')){
-  location.href = "index.html";
-}
-
+/* =========================
+   LOGIN FUNCTION
+   ========================= */
 function login(){
+
   if(!email.value || !password.value){
     showPopup("แจ้งเตือน","กรุณากรอก Email และ Password");
     return;
@@ -84,10 +86,10 @@ function login(){
     hideOverlay();
 
     if(res.ok){
-      sessionStorage.setItem('user', JSON.stringify(res.user));
+      localStorage.setItem("user", JSON.stringify(res.user));
       location.href = "index.html";
     }else{
-      showPopup("ผิดพลาด", res.message);
+      showPopup("เข้าสู่ระบบไม่สำเร็จ", res.message);
     }
   })
   .catch(()=>{
