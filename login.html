@@ -1,67 +1,30 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>IT Login</title>
-<link rel="stylesheet" href="./css/style.css">
+  <meta charset="utf-8">
+  <title>Login</title>
 </head>
-<script src="session-guard.js"></script>
-
 <body>
+  <h2>Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="pw" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
 
-<div class="login-wrapper">
-  <div class="login-header">
-    <h2>IT Service</h2>
-    <p>เข้าสู่ระบบ</p>
-  </div>
+  <script>
+    const API = 'https://script.google.com/macros/s/DEPLOY_ID/exec';
 
-  <div class="login-card">
-    <div class="form-group">
-      <input id="email" placeholder="Email">
-    </div>
-    <div class="form-group">
-      <input id="password" type="password" placeholder="Password">
-    </div>
-    <button class="btn-login" onclick="login()">LOGIN</button>
-  </div>
-</div>
+    async function login() {
+      const email = email.value.trim();
+      const password = pw.value;
 
-<div class="overlay hidden" id="overlay">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <div>กำลังเข้าสู่ระบบ...</div>
-  </div>
-</div>
+      const r = await fetch(`${API}?action=login&email=${email}&password=${password}`);
+      const j = await r.json();
 
-<script>
-const API = 'YOUR_GAS_URL';
-const overlay = document.getElementById('overlay');
+      if (!j.ok) return alert(j.message);
 
-function login(){
-  overlay.classList.remove('hidden');
-
-  fetch(`${API}?action=login&email=${email.value}&password=${password.value}`)
-    .then(r=>r.json())
-    .then(res=>{
-      overlay.classList.add('hidden');
-
-      if(!res.success) return alert(res.message);
-
-      localStorage.setItem('it_user', JSON.stringify({
-        email,
-        token: res.data.token,
-        role: res.data.role
-      }));
-
-      if(res.data.forceChange){
-        location.href='change-password.html';
-      }else if(res.data.role==='ADMIN'){
-        location.href='admin-approve.html';
-      }else{
-        alert('Login success');
-      }
-    });
-}
-</script>
+      localStorage.setItem('session_token', j.data.token);
+      location.replace(j.data.firstLogin ? 'change-password.html' : 'index.html');
+    }
+  </script>
 </body>
 </html>
