@@ -3,76 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Approve</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
 </head>
+
 <body>
+<h2>รายการรออนุมัติ</h2>
 
-<div class="login-wrapper" style="max-width:900px">
-  <div class="login-header">
-    <h2>อนุมัติผู้ใช้งาน</h2>
-  </div>
+<table id="tbl">
+<thead>
+<tr>
+  <th>Email</th>
+  <th>Status</th>
+  <th>Action</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
 
-  <div class="login-card">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="tb"></tbody>
-    </table>
-  </div>
-</div>
-
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p id="popMsg"></p>
-    <button onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
+<div id="overlay" class="overlay hidden"></div>
+<div id="popup" class="popup hidden"></div>
 
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
-<script>
-const admin = JSON.parse(localStorage.getItem("it_user"));
-if(!admin || admin.role!=="ADMIN") location.href="login.html";
 
-function load(){
-  callAPI("getRegister",{role:"ADMIN"}).then(res=>{
-    if(!res.success) return;
-    tb.innerHTML="";
-    res.data.forEach(r=>{
-      if(r.status==="ACTIVE"){
-        tb.innerHTML+=`
+<script>
+function load() {
+  callAPI('getRegister').then(res=>{
+    const body = document.querySelector('#tbl tbody');
+    body.innerHTML='';
+    res.data.forEach((r,i)=>{
+      if (i===0 || r[10]!=='ACTIVE') return;
+      body.innerHTML+=`
         <tr>
-          <td>${r.email}</td>
-          <td class="status-true">VERIFIED</td>
-          <td><button class="btn-success" onclick="approve('${r.email}')">อนุมัติ</button></td>
+          <td>${r[1]}</td>
+          <td>${r[10]}</td>
+          <td><button onclick="approve('${r[1]}')">อนุมัติ</button></td>
         </tr>`;
-      }
     });
   });
 }
 
-function approve(email){
+function approve(email) {
   showOverlay();
-  callAPI("approve",{email,admin:admin.userid}).then(res=>{
-    hideOverlay();
-    showPopup("แจ้งเตือน",res.message);
-    load();
-  });
+  callAPI('approve',{email})
+    .then(r=>{
+      hideOverlay();
+      showPopup('ผลลัพธ์', r.message);
+      load();
+    });
 }
 
 load();
