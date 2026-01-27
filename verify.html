@@ -1,65 +1,48 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Verify</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
+  <meta charset="UTF-8">
+  <title>Verify | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./css/style.css">
 </head>
-  
 <body>
 
 <div class="login-wrapper">
-  <!-- HEADER -->
+
   <div class="login-header">
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
-        <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
+        <h2>ยืนยันตัวตน</h2>
+        <span>กรอกรหัสยืนยันจากอีเมล</span>
       </div>
     </div>
   </div>
-    <h2>🔐 ยืนยันตัวตน</h2>
-  </div>
 
   <div class="login-card">
-    <input id="email" placeholder="Email">
-    <input id="code" placeholder="Verification Code">
+    <div class="form-group">
+      <input id="code" placeholder="Verification Code">
+    </div>
+
     <button class="btn-login" onclick="verify()">ยืนยัน</button>
   </div>
-</div>
 
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card"><div class="spinner"></div></div>
-</div>
-
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p id="popupMsg"></p>
-    <button onclick="closePopup()">ตกลง</button>
-  </div>
 </div>
 
 <script src="./js/api.js"></script>
-<script src="./js/ui.js"></script>
 <script>
 function verify(){
-  showOverlay();
-  callAPI('verify',{
-    email:email.value,
-    code:code.value
-  }).then(r=>{
-    hideOverlay();
-    if(r.success){
+  callAPI('verify',{code:code.value}).then(res=>{
+    if(res.ok){
       location.href="login.html";
     }else{
-      showPopup("ผิดพลาด",r.message);
+      alert(res.message);
     }
   });
 }
 </script>
+
 </body>
 </html>
