@@ -29,37 +29,15 @@ body{
    HEADER (LOGO + TEXT)
    ============================= */
 .login-header{
-  text-align:center;
-  margin-bottom:24px;
+  background:linear-gradient(135deg,#b1005d,#ff007f);
+  padding:20px;
+  border-radius:20px 20px 0 0;
 }
 
-.login-logo{
-  width:180px;          /* ⭐ ลดจากเดิม */
-  max-width:80%;
-  margin-bottom:12px;
-}
-
-.system-title h2{
-  margin:0;
-  font-size:1.2rem;
-  font-weight:700;
-  color:#c2185b;
-}
-
-.system-title p{
-  margin:4px 0;
-  font-size:0.95rem;
-  color:#666;
-}
-
-.system-title span{
-  display:inline-block;
-  margin-top:6px;
-  padding:4px 10px;
-  font-size:0.8rem;
-  border-radius:12px;
-  background:#fde4ec;
-  color:#ad1457;
+.logo-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
 
 .header-logo{
@@ -104,38 +82,49 @@ body{
   margin-bottom:14px;
 }
 
-/* ===== ICON OUTSIDE INPUT (SAFE) ===== */
-.row-input{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.row-icon{
-  font-size:18px;
-  min-width:26px;
-  text-align:center;
-  opacity:.75;
-}
-
-.row-input input{
-  flex:1;
-}
-
-/* ===== INPUT ===== */
+/* ⭐ INPUT + BORDER COLOR */
 input{
   width:100%;
   padding:12px 14px;
   border-radius:14px;
-  border:2px solid #ff00aa;
+  border:2px solid #ffc1dc;           /* เส้นขอบปกติ */
   outline:none;
   font-size:15px;
   transition:.2s;
 }
 
 input:focus{
-  border-color:#ff0080;
+  border-color:#ff0080;               /* ตอนโฟกัส */
   box-shadow:0 0 0 3px rgba(255,0,128,.15);
+}
+
+/* ✔ / ❌ STATE */
+.input-success{
+  border-color:#2ecc71;
+}
+
+.input-error{
+  border-color:#e74c3c;
+}
+
+/* =============================
+   ICON INPUT
+   ============================= */
+.icon-input{
+  position:relative;
+}
+
+.icon-input input{
+  padding-left:42px;
+}
+
+.input-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:18px;
+  pointer-events:none;
 }
 
 /* =============================
@@ -179,29 +168,18 @@ input:focus{
 }
 
 /* =============================
-   OVERLAY
+   OVERLAY / POPUP (FIXED)
    ============================= */
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.8);
   display:flex;
   justify-content:center;
   align-items:center;
   z-index:1000;
 }
 
-.overlay-card{
-  background:#fff;
-  padding:22px;
-  border-radius:18px;
-  text-align:center;
-  min-width:260px;
-}
-
-/* =============================
-   POPUP
-   ============================= */
 .popup{
   position:fixed;
   inset:0;
@@ -212,12 +190,18 @@ input:focus{
   z-index:1100;
 }
 
+.hidden{
+  display:none;
+}
+
+.overlay-card,
 .popup-card{
   background:#fff;
   padding:22px;
   border-radius:18px;
   text-align:center;
   min-width:260px;
+  pointer-events:auto;
 }
 
 .popup-card h3{
@@ -243,13 +227,6 @@ input:focus{
 }
 
 /* =============================
-   UTIL
-   ============================= */
-.hidden{
-  display:none;
-}
-
-/* =============================
    RESPONSIVE
    ============================= */
 @media (max-width:768px){
@@ -261,57 +238,4 @@ input:focus{
   .login-wrapper{
     max-width:100%;
   }
-   /* ===== Header หลัก ===== */
-.system-header {
-  width: 100%;
-  padding: 20px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  margin-bottom: 24px;
-}
-
-/* กล่องโลโก้ */
-.logo-box {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  max-width: 420px;
-  margin: 0 auto;
-  text-align: left;
-}
-
-/* โลโก้ */
-.logo-img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
-
-/* กล่องข้อความ */
-.logo-text h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #ffffff;
-}
-
-/* ชื่อระบบ */
-.logo-text .system-name {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.95rem;
-  color: #cfe8ff;
-}
-
-/* หน่วยงาน */
-.logo-text .department {
-  display: inline-block;
-  margin-top: 6px;
-  font-size: 0.85rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.15);
-  color: #ffffff;
-}
-
 }
