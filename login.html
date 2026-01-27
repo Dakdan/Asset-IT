@@ -1,66 +1,241 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Login | IT Maintenance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="./css/style.css">
+  <meta charset="UTF-8" />
+  <title>เข้าสู่ระบบ | โรงพยาบาลอุดรธานี</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ICON -->
+  <link rel="icon" href="logo.png" />
+
+  <style>
+    :root{
+      --pink:#ff008c;
+      --pink-dark:#c7006a;
+      --bg:#fde7ee;
+      --border:#ff4da6;
+      --text:#333;
+    }
+
+    *{box-sizing:border-box;font-family:"Segoe UI",Tahoma,sans-serif}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* ===== CARD ===== */
+    .card{
+      width:360px;
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 15px 35px rgba(0,0,0,.15);
+      overflow:hidden;
+    }
+
+    /* ===== HEADER ===== */
+    .header{
+      background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+      color:#000;
+      padding:18px 20px;
+      position:relative;
+    }
+
+    .header h2{
+      margin:0;
+      font-size:20px;
+      font-weight:700;
+    }
+
+    .header span{
+      display:block;
+      font-size:13px;
+      margin-top:4px;
+    }
+
+    /* ===== BODY ===== */
+    .body{
+      padding:20px;
+    }
+
+    .logo-big{
+      text-align:center;
+      margin-bottom:10px;
+    }
+
+    .logo-big img{
+      width:120px;
+      margin-bottom:10px;
+    }
+
+    /* ===== INPUT ===== */
+    .form-group{
+      position:relative;
+      margin:14px 0;
+    }
+
+    .form-group input{
+      width:100%;
+      padding:12px 14px 12px 44px;
+      border-radius:14px;
+      border:2px solid var(--border);
+      font-size:15px;
+      outline:none;
+    }
+
+    .form-group input:focus{
+      border-color:var(--pink-dark);
+    }
+
+    .form-group .icon{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+      pointer-events:none;
+    }
+
+    /* ===== BUTTON ===== */
+    .btn{
+      width:100%;
+      margin-top:18px;
+      padding:14px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn:hover{opacity:.9}
+
+    /* ===== LINKS ===== */
+    .links{
+      text-align:center;
+      margin-top:14px;
+      font-size:14px;
+    }
+
+    .links a{
+      color:var(--pink-dark);
+      text-decoration:none;
+      margin:0 6px;
+      font-weight:600;
+    }
+
+    /* ===== OVERLAY ALERT ===== */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+
+    .alert-box{
+      background:#fff;
+      border-radius:16px;
+      width:280px;
+      padding:20px;
+      text-align:center;
+    }
+
+    .alert-box h3{
+      margin:0 0 8px;
+      color:var(--pink-dark);
+    }
+
+    .alert-box button{
+      margin-top:14px;
+      padding:10px 24px;
+      border:none;
+      border-radius:12px;
+      background:var(--pink);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="login-wrapper">
+  <div class="card">
 
-<div class="login-header">
-  <img src="logo.png" class="login-logo" />
+    <!-- HEADER -->
+    <div class="header">
+      <h2>โรงพยาบาลอุดรธานี</h2>
+      <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+      <span>หน่วยงาน : เทคโนโลยีสารสนเทศ</span>
+    </div>
 
-  <div class="system-title">
-    <h2>โรงพยาบาลอุดรธานี</h2>
-    <p>ระบบบริหารงานซ่อมบำรุงและบริการ</p>
-    <span>หน่วยงาน : เทคโนโลยีสารสนเทศ</span>
+    <!-- BODY -->
+    <div class="body">
+
+      <div class="logo-big">
+        <img src="logo.png" alt="UDH">
+      </div>
+
+      <div class="form-group">
+        <span class="icon">📧</span>
+        <input type="email" id="email" placeholder="Email">
+      </div>
+
+      <div class="form-group">
+        <span class="icon">🔑</span>
+        <input type="password" id="password" placeholder="Password">
+      </div>
+
+      <button class="btn" onclick="login()">🚀 เข้าสู่ระบบ</button>
+
+      <div class="links">
+        ✍️ <a href="register.html">ลงทะเบียน</a> |
+        🔄 <a href="forgot.html">ขอรหัสผ่านใหม่</a>
+      </div>
+
+    </div>
   </div>
-</div>
-</head>
 
-  <div class="login-card">
-
-    <div class="form-group row-input">
-      <span class="row-icon">📧</span>
-      <input id="email" placeholder="Email">
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay">
+    <div class="alert-box">
+      <h3>แจ้งเตือน</h3>
+      <p id="alertMsg">กรุณากรอกข้อมูลให้ครบ</p>
+      <button onclick="closeAlert()">ตกลง</button>
     </div>
-
-    <div class="form-group row-input">
-      <span class="row-icon">🔑</span>
-      <input id="password" type="password" placeholder="Password">
-    </div>
-
-    <button class="btn-login" onclick="login()">🚀 เข้าสู่ระบบ</button>
-
-    <div class="register-link">
-      ✍️ <a href="register.html">ลงทะเบียน</a> |
-      🔄 <a href="forgot.html">ขอรหัสผ่านใหม่</a>
-    </div>
-
   </div>
-</div>
 
-<script src="./js/api.js"></script>
 <script>
-function login(){
-  if(!email.value || !password.value){
-    alert("กรุณากรอกข้อมูลให้ครบ");
-    return;
-  }
-  callAPI('login',{
-    email:email.value,
-    password:password.value
-  }).then(res=>{
-    if(res.ok){
-      location.href="index.html";
-    }else{
-      alert(res.message);
+  function login(){
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value.trim();
+
+    if(!email || !pass){
+      showAlert('กรุณากรอกข้อมูลให้ครบ');
+      return;
     }
-  });
-}
+
+    // 🔗 ต่อ Apps Script ตรงนี้
+    console.log('LOGIN', email, pass);
+  }
+
+  function showAlert(msg){
+    document.getElementById('alertMsg').innerText = msg;
+    document.getElementById('overlay').style.display = 'flex';
+  }
+
+  function closeAlert(){
+    document.getElementById('overlay').style.display = 'none';
+  }
 </script>
 
 </body>
