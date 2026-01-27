@@ -2,118 +2,80 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Register | IT Maintenance</title>
+  <title>ลงทะเบียน | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/ui.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
 <div class="login-wrapper">
 
-  <!-- HEADER -->
   <div class="login-header">
-    <h1>ลงทะเบียนผู้ใช้งาน IT</h1>
-    <p>สำหรับเจ้าหน้าที่ IT เท่านั้น</p>
+    <div class="header-logo">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
+    </div>
+    <h2>โรงพยาบาลอุดรธานี</h2>
+    <p>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
   </div>
 
-  <!-- CARD -->
   <div class="login-card">
+    <h3>📝 ลงทะเบียนผู้ใช้งาน</h3>
 
     <div class="form-group">
-      <input id="regEmail" type="email" placeholder="Email (ที่ได้รับอนุญาต)">
+      <input id="regEmail" placeholder="Email">
     </div>
 
     <div class="form-group">
-      <input id="regPassword" type="password" placeholder="ตั้งรหัสผ่าน">
+      <input id="regPassword" type="password" placeholder="Password">
     </div>
 
-    <button class="btn-login" id="regBtn" onclick="registerUser()">
-      สมัครสมาชิก
-    </button>
+    <button class="btn-login" onclick="register()">สมัครสมาชิก</button>
 
     <div class="register-link">
-      <a href="./login.html">กลับไปหน้าเข้าสู่ระบบ</a>
+      <a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a>
     </div>
-
   </div>
-
 </div>
 
-<!-- ========== OVERLAY ========== -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <p id="overlayText">กำลังดำเนินการ...</p>
+    <p>กำลังบันทึกข้อมูล...</p>
   </div>
 </div>
 
-<!-- ========== POPUP ========== -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
-    <p id="popupMsg">-</p>
+    <h3 id="popupTitle"></h3>
+    <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
-<!-- JS -->
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
 
 <script>
-const regEmail = document.getElementById("regEmail");
-const regPassword = document.getElementById("regPassword");
-const regBtn = document.getElementById("regBtn");
+function register() {
+  showOverlay();
 
-async function registerUser() {
-  const email = regEmail.value.trim();
-  const password = regPassword.value.trim();
-
-  if (!email || !password) {
-    showPopup("ข้อมูลไม่ครบ", "กรุณากรอก Email และ Password");
-    return;
-  }
-
-  regBtn.disabled = true;
-  showOverlay("กำลังส่งข้อมูลลงทะเบียน...");
-
-  try {
-    const res = await callAPI("register", {
-      email,
-      password
-    });
-
-    if (res.success) {
-      showPopup(
-        "สมัครสมาชิกสำเร็จ",
-        "ระบบได้ส่งรหัสยืนยันไปที่ Email\nกรุณากรอกรหัสเพื่อยืนยันตัวตน"
-      );
-
-      setTimeout(() => {
-        location.href = "./verify.html?email=" + encodeURIComponent(email);
-      }, 2000);
-
-    } else {
-      showPopup("ไม่สำเร็จ", res.message || "ไม่สามารถลงทะเบียนได้");
-    }
-
-  } catch (err) {
-    console.error(err);
-    showPopup("ผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้");
-  } finally {
+  callAPI('register', {
+    email: regEmail.value,
+    password: regPassword.value
+  }).then(res => {
     hideOverlay();
-    regBtn.disabled = false;
-  }
-}
 
-// ENTER = SUBMIT
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter") registerUser();
-});
+    if (res.ok) {
+      showPopup('สำเร็จ', 'สมัครสมาชิกแล้ว กรุณายืนยัน Email');
+      setTimeout(() => {
+        location.href = 'verify.html?email=' + encodeURIComponent(regEmail.value);
+      }, 1500);
+    } else {
+      showPopup('ผิดพลาด', res.message);
+    }
+  });
+}
 </script>
 
 </body>
