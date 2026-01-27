@@ -224,3 +224,28 @@ input {
     margin-top: 8px;
   }
 }
+.login-header{
+  text-align:center;
+  margin-bottom:16px;
+}
+
+.logo-box{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+}
+
+.logo-icon{
+  font-size:38px;
+}
+
+.logo-text h2{
+  margin:0;
+  font-size:20px;
+}
+
+.logo-text span{
+  font-size:13px;
+  color:#6b7280;
+}
