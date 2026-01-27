@@ -1,26 +1,21 @@
-function showOverlay(text = "กำลังดำเนินการ...") {
-  const overlay = document.getElementById("overlay");
-  if (!overlay) return;
-  overlay.querySelector("p").innerText = text;
-  overlay.classList.remove("hidden");
+function showOverlay() {
+  document.getElementById("overlay")?.classList.remove("hidden");
 }
 
 function hideOverlay() {
-  const overlay = document.getElementById("overlay");
-  if (!overlay) return;
-  overlay.classList.add("hidden");
+  document.getElementById("overlay")?.classList.add("hidden");
 }
 
-function showPopup(title, message) {
+function showPopup(msg, title = "แจ้งเตือน") {
   const popup = document.getElementById("popup");
   if (!popup) return;
-  popup.querySelector("h3").innerText = title;
-  popup.querySelector("p").innerText = message;
+
+  document.getElementById("popupMsg").innerText = msg;
+  document.getElementById("popupTitle").innerText = title;
+
   popup.classList.remove("hidden");
 }
 
 function closePopup() {
-  const popup = document.getElementById("popup");
-  if (!popup) return;
-  popup.classList.add("hidden");
+  document.getElementById("popup")?.classList.add("hidden");
 }
