@@ -1,99 +1,126 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard | IT Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Login</title>
 
-  <link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#0f4c81,#1a73b8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+}
+.wrapper{
+  width:100%;
+  max-width:420px;
+  background:#ffffff;
+  color:#333;
+  border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  overflow:hidden;
+}
+.header{
+  background:linear-gradient(135deg,#003f7d,#005fa3);
+  padding:20px;
+  display:flex;
+  gap:14px;
+  align-items:center;
+  color:#fff;
+}
+.header img{
+  width:56px;
+  height:56px;
+}
+.logo-text h2{
+  margin:0;
+  font-size:18px;
+}
+.logo-text span{
+  display:block;
+  font-size:12px;
+  opacity:.85;
+}
+.form{
+  padding:26px;
+}
+.field{
+  position:relative;
+  margin-bottom:18px;
+}
+.field i{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#0f4c81;
+}
+.field input{
+  width:100%;
+  padding:12px 12px 12px 38px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  outline:none;
+}
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#0f4c81;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{background:#0b3c66}
+.links{
+  text-align:center;
+  margin-top:14px;
+  font-size:14px;
+}
+.links a{
+  color:#0f4c81;
+  text-decoration:none;
+}
+</style>
 </head>
+
 <body>
+<div class="wrapper">
 
-<div class="login-wrapper">
-
-  <!-- HEADER -->
-  <div class="login-header">
-    <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
-      <div class="logo-text">
-        <h2>ระบบแจ้งซ่อมบำรุง</h2>
-        <span>โรงพยาบาลอุดรธานี</span>
-        <span id="roleText"></span>
-      </div>
+  <div class="header">
+    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
+    <div class="logo-text">
+      <h2>โรงพยาบาลอุดรธานี</h2>
+      <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+      <span>หน่วยงาน: เทคโนโลยีสารสนเทศ</span>
     </div>
   </div>
 
-  <!-- CARD -->
-  <div class="login-card">
+  <div class="form">
+    <div class="field">
+      <i class="fa fa-user"></i>
+      <input type="text" placeholder="Username">
+    </div>
+    <div class="field">
+      <i class="fa fa-lock"></i>
+      <input type="password" placeholder="Password">
+    </div>
 
-    <h3>Dashboard</h3>
+    <button>เข้าสู่ระบบ</button>
 
-    <p>ยินดีต้อนรับเข้าสู่ระบบ</p>
-
-    <br>
-
-    <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
-
+    <div class="links">
+      <a href="register.html">สมัครสมาชิก</a> | 
+      <a href="forgot.html">ลืมรหัสผ่าน</a>
+    </div>
   </div>
 
 </div>
-
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
-    <p id="popupMsg"></p>
-    <button class="btn-login" onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
-
-<script src="./js/ui.js"></script>
-
-<script>
-/* =============================
-   CHECK SESSION (สำคัญที่สุด)
-   ============================= */
-const session = localStorage.getItem("it_session");
-
-if(!session){
-  // ❌ ไม่มี session → เด้งกลับ login
-  location.replace("login.html");
-}
-
-/* =============================
-   LOAD USER INFO
-   ============================= */
-try{
-  const user = JSON.parse(session);
-  document.getElementById("roleText").innerText =
-    "สิทธิ์การใช้งาน: " + (user.role || "ผู้ใช้งาน");
-
-}catch(e){
-  // session พัง
-  localStorage.removeItem("it_session");
-  location.replace("login.html");
-}
-
-/* =============================
-   LOGOUT
-   ============================= */
-function logout(){
-  showOverlay();
-
-  setTimeout(()=>{
-    localStorage.removeItem("it_session");
-    location.replace("login.html");
-  },800);
-}
-</script>
-
 </body>
 </html>
