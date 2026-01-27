@@ -34,37 +34,51 @@
   </div>
 </div>
 
-<script src="./js/api.js"></script>
-<script src="./js/ui.js"></script>
-
 <script>
+/* 🔧 แก้ตรงนี้ */
+const API = 'PUT_YOUR_GAS_WEBAPP_URL_HERE';
+
+const emailEl = document.getElementById('email');
+const passwordEl = document.getElementById('password');
+const overlay = document.getElementById('overlay');
+
 function login(){
-  showOverlay();
+  if(!emailEl.value || !passwordEl.value){
+    alert('กรุณากรอก Email และ Password');
+    return;
+  }
 
-  callAPI('login', {
-    email: email.value,
-    password: password.value
-  }).then(res=>{
-    hideOverlay();
+  overlay.classList.remove('hidden');
 
-    if(!res.success){
-      return showPopup('ผิดพลาด', res.message);
-    }
+  fetch(`${API}?action=login&email=${encodeURIComponent(emailEl.value)}&password=${encodeURIComponent(passwordEl.value)}`)
+    .then(r => r.json())
+    .then(res => {
+      overlay.classList.add('hidden');
 
-    localStorage.setItem('it_user', JSON.stringify({
-      email: res.data.email,
-      token: res.data.token,
-      role: res.data.role
-    }));
+      if(!res.success){
+        alert(res.message || 'Login failed');
+        return;
+      }
 
-    if(res.data.forceChange){
-      location.href='change-password.html';
-    }else if(res.data.role==='ADMIN'){
-      location.href='admin-approve.html';
-    }else{
-      location.href='dashboard.html';
-    }
-  });
+      localStorage.setItem('it_user', JSON.stringify({
+        email: res.data.email,
+        token: res.data.token,
+        role: res.data.role
+      }));
+
+      if(res.data.forceChange){
+        location.href = 'change-password.html';
+      }else if(res.data.role === 'ADMIN'){
+        location.href = 'admin-approve.html';
+      }else{
+        location.href = 'dashboard.html';
+      }
+    })
+    .catch(err=>{
+      overlay.classList.add('hidden');
+      alert('เชื่อมต่อระบบไม่ได้');
+      console.error(err);
+    });
 }
 </script>
 
