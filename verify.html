@@ -11,6 +11,7 @@
 
 <div class="login-wrapper">
 
+  <!-- HEADER -->
   <div class="login-header">
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
@@ -21,6 +22,7 @@
     </div>
   </div>
 
+  <!-- CARD -->
   <div class="login-card">
     <div class="form-group">
       <input id="code" placeholder="Verification Code">
@@ -31,16 +33,51 @@
 
 </div>
 
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังตรวจสอบ...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <p id="popupMsg"></p>
+    <button class="btn-login" onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
 <script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
+
 <script>
 function verify(){
-  callAPI('verify',{code:code.value}).then(res=>{
-    if(res.ok){
-      location.href="login.html";
-    }else{
-      alert(res.message);
-    }
-  });
+
+  if(!code.value){
+    showPopup("แจ้งเตือน","กรุณากรอกรหัสยืนยัน");
+    return;
+  }
+
+  showOverlay();
+
+  callAPI('verify',{ code: code.value })
+    .then(res=>{
+      hideOverlay();
+
+      if(res.ok){
+        showPopup("สำเร็จ","ยืนยันตัวตนเรียบร้อย");
+        setTimeout(()=>location.href="login.html",1200);
+      }else{
+        showPopup("ผิดพลาด",res.message);
+      }
+    })
+    .catch(()=>{
+      hideOverlay();
+      showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
+    });
 }
 </script>
 
