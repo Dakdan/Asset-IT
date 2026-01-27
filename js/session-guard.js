@@ -1,6 +1,6 @@
 (async function () {
   const CONFIG = {
-    API_BASE: 'https://script.google.com/macros/s/DEPLOY_ID/exec', // 🔴 แก้
+    API_BASE: 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec', // 🔴 แก้
     LOGIN_PAGE: 'login.html',
     CHANGE_PASSWORD_PAGE: 'change-password.html',
     HOME_PAGE: 'index.html',
