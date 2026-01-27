@@ -41,6 +41,18 @@ body{
   justify-content:center;
   gap:12px;
 }
+.logo-text{
+  text-align:left;
+}
+.logo-text h2{
+  font-size:18px;
+  margin:0;
+}
+.logo-text span{
+  font-size:12px;
+  opacity:.9;
+}
+
 
 .logo-img{
   width:56px;
