@@ -3,47 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Log</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
 </head>
+
 <body>
+<h2>System Log</h2>
 
-<div class="login-wrapper" style="max-width:900px">
-  <div class="login-header">
-    <h2>LOG การใช้งานระบบ</h2>
-  </div>
-
-  <div class="login-card">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>เวลา</th>
-          <th>Action</th>
-          <th>Email</th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody id="logTb"></tbody>
-    </table>
-  </div>
-</div>
+<table id="log">
+<thead>
+<tr>
+  <th>Time</th>
+  <th>Action</th>
+  <th>Email</th>
+  <th>Detail</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
 
 <script src="./js/api.js"></script>
-<script>
-const admin = JSON.parse(localStorage.getItem("it_user"));
-if(!admin || admin.role!=="ADMIN") location.href="login.html";
 
-callAPI("getLog",{role:"ADMIN"}).then(res=>{
-  if(!res.success) return;
-  res.data.slice(1).forEach(l=>{
-    logTb.innerHTML+=`
-    <tr>
-      <td>${l[0]}</td>
-      <td>${l[1]}</td>
-      <td>${l[2]}</td>
-      <td>${l[3]}</td>
-    </tr>`;
+<script>
+callAPI('getLog',{role:'ADMIN'}).then(res=>{
+  const body=document.querySelector('#log tbody');
+  res.data.forEach((r,i)=>{
+    if(i===0)return;
+    body.innerHTML+=`
+      <tr>
+        <td>${r[0]}</td>
+        <td>${r[1]}</td>
+        <td>${r[2]}</td>
+        <td>${r[3]}</td>
+      </tr>`;
   });
 });
 </script>
