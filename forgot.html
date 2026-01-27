@@ -5,7 +5,24 @@
 <title>Forgot Password</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+ <style>
+    :root { --pink-main: #ff1493; --pink-light: #ff85a2; --pink-bg: #fff0f5; }
+    body { background: linear-gradient(180deg, var(--pink-light) 0%,#ff85a2 5%, var(--pink-bg) 100%); min-height: 100vh; font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
+    .header-banner { background: linear-gradient(180deg, #003 0%,#ff1493 30%); border: 2px solid #003; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .main-card { background: white; border: 2px solid #003; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .input-style { border: 2px solid #ff00ff; border-radius: 15px; padding: 12px 15px; width: 100%; outline: none; }
+    .btn-submit { background-color: #ff1493; color: white; border: 2px solid #00ff00; border-radius: 15px; font-weight: bold; }
+    .btn-submit:active { transform: scale(0.95); }
+    
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #000; display: flex; justify-content: space-around; padding: 10px 0; z-index: 40; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; cursor: pointer; }
+    .nav-item.active { color: #ff2d92; font-weight: bold; }
+    .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
 
+    /* Overlay สไตล์ใหม่ที่เพิ่มเข้าไป */
+    .search-overlay { position: fixed; inset: 0; background: var(--pink-bg); z-index: 100; display: none; padding: 20px; overflow-y: auto; }
+    .asset-card-new { background: white; border: 2px solid #000; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; }
+  </style>
 <body>
 <div class="wrapper">
     <div class="header">
