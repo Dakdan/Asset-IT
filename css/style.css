@@ -28,33 +28,37 @@ body{
 /* =============================
    HEADER (LOGO + TEXT)
    ============================= */
-.login-header{
-  background:linear-gradient(180deg,#800040,#ff0080);
-  color:#fff;
-  padding:18px 16px;
-  border-radius:20px 20px 0 0;
-  overflow:hidden;
+.login-header {
+  background: linear-gradient(135deg, #b1005d, #ff007f);
+  padding: 20px;
+  border-radius: 18px 18px 0 0;
 }
 
+.logo-box {
+  display: flex;
+  align-items: center;   /* ⭐ ตัวนี้ทำให้ logo + ตัวหนังสืออยู่ระดับเดียวกัน */
+  gap: 12px;
 }
 
-.logo-box{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
+.header-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
-.logo-text{
-  text-align:left;
+
+.logo-text h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.2;
 }
-.logo-text h2{
-  font-size:18px;
-  margin:0;
+
+.logo-text span {
+  font-size: 13px;
+  color: #ffe3f0;
+  line-height: 1.2;
 }
-.logo-text span{
-  font-size:12px;
-  opacity:.9;
-}
+
 
 
 .logo-img{
