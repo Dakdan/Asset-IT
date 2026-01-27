@@ -2,238 +2,125 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Login | IT Maintenance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 body{
   margin:0;
   min-height:100vh;
+  background:linear-gradient(135deg,#0f4c81,#1a73b8);
   display:flex;
-  align-items:center;
   justify-content:center;
-  background:#fde6ee;
+  align-items:center;
+  color:#fff;
 }
-
-/* ===== CARD ===== */
-.login-card{
-  width:360px;
-  background:#fff;
-  border-radius:22px;
-  box-shadow:0 20px 40px rgba(0,0,0,.15);
+.wrapper{
+  width:100%;
+  max-width:420px;
+  background:#ffffff;
+  color:#333;
+  border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
   overflow:hidden;
 }
-
-/* ===== HEADER ===== */
-.login-header{
-  background:linear-gradient(135deg,#d9006c,#ff2f92);
-  color:#fff;
+.header{
+  background:linear-gradient(135deg,#003f7d,#005fa3);
   padding:20px;
-}
-.logo-box{
   display:flex;
+  gap:14px;
   align-items:center;
-  gap:12px;
+  color:#fff;
 }
-.logo-box img{
-  width:48px;
-  height:48px;
+.header img{
+  width:56px;
+  height:56px;
 }
 .logo-text h2{
   margin:0;
-  font-size:20px;
+  font-size:18px;
 }
 .logo-text span{
   display:block;
   font-size:12px;
-  opacity:.9;
+  opacity:.85;
 }
-
-/* ===== BODY ===== */
-.login-body{
-  padding:25px;
+.form{
+  padding:26px;
 }
-
-/* ===== INPUT ===== */
-.form-group{
+.field{
   position:relative;
-  margin-bottom:14px;
+  margin-bottom:18px;
 }
-.form-group input{
-  width:100%;
-  padding:12px 14px 12px 44px;
-  border-radius:16px;
-  border:2px solid #ff5fa2;
-  font-size:14px;
-  outline:none;
-}
-.form-group input:focus{
-  border-color:#d9006c;
-}
-.form-group .icon{
+.field i{
   position:absolute;
-  left:14px;
+  left:12px;
   top:50%;
   transform:translateY(-50%);
-  font-size:18px;
+  color:#0f4c81;
 }
-
-/* ===== BUTTON ===== */
-.btn-login{
+.field input{
   width:100%;
+  padding:12px 12px 12px 38px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  outline:none;
+}
+button{
+  width:100%;
+  padding:12px;
   border:none;
-  padding:13px;
-  border-radius:18px;
-  background:#ff007f;
+  border-radius:8px;
+  background:#0f4c81;
   color:#fff;
   font-size:16px;
   cursor:pointer;
 }
-.btn-login:hover{opacity:.9}
-
-/* ===== LINKS ===== */
-.login-links{
+button:hover{background:#0b3c66}
+.links{
+  text-align:center;
   margin-top:14px;
-  text-align:center;
-  font-size:13px;
+  font-size:14px;
 }
-.login-links a{
-  color:#ff007f;
+.links a{
+  color:#0f4c81;
   text-decoration:none;
-  margin:0 6px;
 }
-
-/* ===== OVERLAY ===== */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:99;
-}
-.overlay.hidden{display:none}
-.overlay-card{
-  background:#fff;
-  padding:25px;
-  border-radius:16px;
-  text-align:center;
-}
-.spinner{
-  width:38px;
-  height:38px;
-  border:4px solid #eee;
-  border-top:4px solid #ff007f;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:auto;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ===== POPUP ===== */
-.popup{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.45);
-  z-index:100;
-}
-.popup.hidden{display:none}
-.popup-card{
-  background:#fff;
-  padding:22px;
-  border-radius:16px;
-  width:280px;
-  text-align:center;
-}
-.popup-card h3{margin-top:0}
 </style>
 </head>
 
 <body>
+<div class="wrapper">
 
-<div class="login-card">
-
-  <!-- HEADER -->
-  <div class="login-header">
-    <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
-      <div class="logo-text">
-        <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
-        <span>หน่วยงาน: เทคโนโลยีสารสนเทศ</span>
-      </div>
+  <div class="header">
+    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
+    <div class="logo-text">
+      <h2>โรงพยาบาลอุดรธานี</h2>
+      <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+      <span>หน่วยงาน: เทคโนโลยีสารสนเทศ</span>
     </div>
   </div>
 
-  <!-- BODY -->
-  <div class="login-body">
-
-    <div class="form-group">
-      <span class="icon">📧</span>
-      <input id="email" placeholder="Email">
+  <div class="form">
+    <div class="field">
+      <i class="fa fa-user"></i>
+      <input type="text" placeholder="Username">
+    </div>
+    <div class="field">
+      <i class="fa fa-lock"></i>
+      <input type="password" placeholder="Password">
     </div>
 
-    <div class="form-group">
-      <span class="icon">🔑</span>
-      <input id="password" type="password" placeholder="Password">
+    <button>เข้าสู่ระบบ</button>
+
+    <div class="links">
+      <a href="register.html">สมัครสมาชิก</a> | 
+      <a href="forgot.html">ลืมรหัสผ่าน</a>
     </div>
-
-    <button class="btn-login" onclick="login()">🚀 เข้าสู่ระบบ</button>
-
-    <div class="login-links">
-      ✍️ <a href="register.html">ลงทะเบียน</a> |
-      🔄 <a href="forgot.html">ขอรหัสผ่านใหม่</a>
-    </div>
-
   </div>
+
 </div>
-
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังเข้าสู่ระบบ...</p>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
-    <p id="popupMsg"></p>
-    <button class="btn-login" onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
-
-<script>
-function showOverlay(){overlay.classList.remove('hidden')}
-function hideOverlay(){overlay.classList.add('hidden')}
-function showPopup(t,m){
-  popupTitle.innerText=t;
-  popupMsg.innerText=m;
-  popup.classList.remove('hidden');
-}
-function closePopup(){popup.classList.add('hidden')}
-
-function login(){
-  if(!email.value || !password.value){
-    showPopup("แจ้งเตือน","กรุณากรอกข้อมูลให้ครบ");
-    return;
-  }
-  showOverlay();
-
-  // 🔧 ตรงนี้ต่อ Apps Script ได้ทันที
-  setTimeout(()=>{
-    hideOverlay();
-    showPopup("สำเร็จ","เข้าสู่ระบบเรียบร้อย");
-  },1200);
-}
-</script>
-
 </body>
 </html>
