@@ -4,40 +4,33 @@
   <meta charset="UTF-8">
   <title>Verify | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- THEME -->
-  <link rel="stylesheet" href="./css/theme.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
-<div class="auth-wrapper">
+<div class="login-wrapper">
 
-  <!-- HEADER -->
-  <div class="auth-header">
+  <div class="login-header">
     <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="logo">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>ยืนยันตัวตน</h2>
-        <span>กรอกรหัสยืนยันจากอีเมล</span>
+        <span>กรอกรหัสจากอีเมล</span>
       </div>
     </div>
   </div>
 
-  <!-- CARD -->
-  <div class="auth-card">
-
-    <h3 class="card-title">✅ Verification</h3>
+  <div class="login-card">
 
     <div class="form-group">
-      <span class="input-icon">🔢</span>
       <input id="code" placeholder="Verification Code">
     </div>
 
-    <button class="btn" onclick="verify()">✔ ยืนยัน</button>
+    <button class="btn-login" onclick="verify()">ยืนยัน</button>
 
-    <div class="auth-link">
-      🔄 <a href="verify.html">ขอรหัสใหม่</a> |
-      🔐 <a href="login.html">เข้าสู่ระบบ</a>
+    <div class="register-link">
+      ไม่ได้รับรหัส?
+      <a href="#" onclick="resendCode()">ขอรหัสใหม่</a>
     </div>
 
   </div>
@@ -45,38 +38,28 @@
 
 <!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
-  <div class="popup-card">
+  <div class="overlay-card">
     <div class="spinner"></div>
-    <p>กำลังตรวจสอบ...</p>
+    <p>กำลังดำเนินการ...</p>
   </div>
 </div>
 
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <h3 id="popupTitle"></h3>
     <p id="popupMsg"></p>
-    <br>
-    <button class="btn" onclick="closePopup()">ตกลง</button>
+    <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
-<script>
-/* =============================
-   UI CORE
-   ============================= */
-function showOverlay(){ overlay.classList.remove('hidden'); }
-function hideOverlay(){ overlay.classList.add('hidden'); }
-function showPopup(t,m){
-  popupTitle.innerText=t;
-  popupMsg.innerText=m;
-  popup.classList.remove('hidden');
-}
-function closePopup(){ popup.classList.add('hidden'); }
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
 
-/* =============================
-   VERIFY FLOW
-   ============================= */
+<script>
+const email = sessionStorage.getItem('verify_email');
+
+// ---------- VERIFY ----------
 function verify(){
 
   if(!code.value){
@@ -86,12 +69,53 @@ function verify(){
 
   showOverlay();
 
-  // 🔧 mock verify
-  setTimeout(()=>{
+  callAPI('verify',{
+    email: email,
+    code: code.value
+  })
+  .then(res=>{
     hideOverlay();
-    showPopup("สำเร็จ","ยืนยันตัวตนเรียบร้อย");
-    setTimeout(()=>location.href="login.html",1200);
-  },1200);
+
+    if(res.ok){
+      callAPI('log',{ action:'VERIFY', email });
+      showPopup("สำเร็จ","ยืนยันตัวตนเรียบร้อย");
+      setTimeout(()=>location.href="login.html",1200);
+    }else{
+      showPopup("ผิดพลาด", res.message);
+    }
+  })
+  .catch(()=>{
+    hideOverlay();
+    showPopup("ผิดพลาด","ระบบขัดข้อง");
+  });
+}
+
+// ---------- RESEND CODE ----------
+function resendCode(){
+
+  if(!email){
+    showPopup("ผิดพลาด","ไม่พบข้อมูลอีเมล");
+    return;
+  }
+
+  showOverlay();
+
+  callAPI('resend_verify',{
+    email: email
+  })
+  .then(res=>{
+    hideOverlay();
+    if(res.ok){
+      callAPI('log',{ action:'RESEND_CODE', email });
+      showPopup("สำเร็จ","ส่งรหัสใหม่แล้ว");
+    }else{
+      showPopup("ผิดพลาด",res.message);
+    }
+  })
+  .catch(()=>{
+    hideOverlay();
+    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
+  });
 }
 </script>
 
