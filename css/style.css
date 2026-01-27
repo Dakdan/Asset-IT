@@ -59,10 +59,13 @@ body{
 }
 
 .logo-text span{
-  font-size:13px;
-  color:#ffe3f0;
-  line-height:1.2;
+  display: block;        /* ⭐ บังคับขึ้นบรรทัดใหม่ */
+  font-size: 13px;
+  color: #ffe3f0;
+  line-height: 1.3;
+  margin-top: 2px;       /* ระยะห่างแต่ละบรรทัด */
 }
+
 
 /* =============================
    CARD
