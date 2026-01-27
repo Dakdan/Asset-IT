@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>IT Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
 </head>
-<script src="session-guard.js"></script>
 
 <body>
 
@@ -33,35 +34,39 @@
   </div>
 </div>
 
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
+
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-const overlay = document.getElementById('overlay');
-
 function login(){
-  overlay.classList.remove('hidden');
+  showOverlay();
 
-  fetch(`${API}?action=login&email=${email.value}&password=${password.value}`)
-    .then(r=>r.json())
-    .then(res=>{
-      overlay.classList.add('hidden');
+  callAPI('login', {
+    email: email.value,
+    password: password.value
+  }).then(res=>{
+    hideOverlay();
 
-      if(!res.success) return alert(res.message);
+    if(!res.success){
+      return showPopup('ผิดพลาด', res.message);
+    }
 
-      localStorage.setItem('it_user', JSON.stringify({
-        email,
-        token: res.data.token,
-        role: res.data.role
-      }));
+    localStorage.setItem('it_user', JSON.stringify({
+      email: res.data.email,
+      token: res.data.token,
+      role: res.data.role
+    }));
 
-      if(res.data.forceChange){
-        location.href='change-password.html';
-      }else if(res.data.role==='ADMIN'){
-        location.href='admin-approve.html';
-      }else{
-        alert('Login success');
-      }
-    });
+    if(res.data.forceChange){
+      location.href='change-password.html';
+    }else if(res.data.role==='ADMIN'){
+      location.href='admin-approve.html';
+    }else{
+      location.href='dashboard.html';
+    }
+  });
 }
 </script>
+
 </body>
 </html>
