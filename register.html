@@ -1,48 +1,47 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Register</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
-    
-  </head>
+  <meta charset="UTF-8">
+  <title>Register | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
+</head>
 <body>
+
 <div class="login-wrapper">
-     <!-- HEADER -->
-<div class="login-header">
+
+  <div class="login-header">
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
-        <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
+        <h2>ลงทะเบียนผู้ใช้งาน</h2>
+        <span>ระบบ IT Maintenance</span>
       </div>
     </div>
-  </div>  
-    
-  <div class="login-header">
-    <h2>📝 ลงทะเบียน</h2>
   </div>
+
   <div class="login-card">
-    <input id="name" placeholder="ชื่อ-สกุล">
-    <input id="email" placeholder="Email">
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button class="btn-login" onclick="register()">สมัครสมาชิก</button>
-  </div>
-</div>
+    <div class="form-group">
+      <input id="name" placeholder="ชื่อ - นามสกุล">
+    </div>
 
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card"><div class="spinner"></div></div>
-</div>
+    <div class="form-group">
+      <input id="email" placeholder="Email">
+    </div>
 
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p id="popupMsg"></p>
-    <button onclick="closePopup()">ตกลง</button>
+    <div class="form-group">
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn-login" onclick="register()">Register</button>
+
+    <div class="register-link">
+      มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+    </div>
   </div>
+
 </div>
 
 <script src="./js/api.js"></script>
@@ -51,19 +50,19 @@
 function register(){
   showOverlay();
   callAPI('register',{
-    name:name.value,
-    email:email.value,
-    user:user.value,
-    pass:pass.value
-  }).then(r=>{
+    name: name.value,
+    email: email.value,
+    password: password.value
+  }).then(res=>{
     hideOverlay();
-    if(r.success){
-      location.href="verify.html?email="+email.value;
+    if(res.ok){
+      location.href="verify.html";
     }else{
-      showPopup("ผิดพลาด",r.message);
+      showPopup("ผิดพลาด", res.message);
     }
   });
 }
 </script>
+
 </body>
 </html>
