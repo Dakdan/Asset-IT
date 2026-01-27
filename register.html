@@ -1,53 +1,35 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>ลงทะเบียน | IT Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
+<meta charset="UTF-8">
+<title>Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
 </head>
 <body>
 
 <div class="login-wrapper">
-
   <div class="login-header">
-    <div class="header-logo">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
-    </div>
-    <h2>โรงพยาบาลอุดรธานี</h2>
-    <p>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+    <h2>📝 ลงทะเบียน</h2>
   </div>
 
   <div class="login-card">
-    <h3>📝 ลงทะเบียนผู้ใช้งาน</h3>
-
-    <div class="form-group">
-      <input id="regEmail" placeholder="Email">
-    </div>
-
-    <div class="form-group">
-      <input id="regPassword" type="password" placeholder="Password">
-    </div>
-
+    <input id="name" placeholder="ชื่อ-สกุล">
+    <input id="email" placeholder="Email">
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
     <button class="btn-login" onclick="register()">สมัครสมาชิก</button>
-
-    <div class="register-link">
-      <a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a>
-    </div>
   </div>
 </div>
 
 <div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังบันทึกข้อมูล...</p>
-  </div>
+  <div class="overlay-card"><div class="spinner"></div></div>
 </div>
 
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
+    <h3>แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
@@ -55,28 +37,23 @@
 
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
-
 <script>
-function register() {
+function register(){
   showOverlay();
-
-  callAPI('register', {
-    email: regEmail.value,
-    password: regPassword.value
-  }).then(res => {
+  callAPI('register',{
+    name:name.value,
+    email:email.value,
+    user:user.value,
+    pass:pass.value
+  }).then(r=>{
     hideOverlay();
-
-    if (res.ok) {
-      showPopup('สำเร็จ', 'สมัครสมาชิกแล้ว กรุณายืนยัน Email');
-      setTimeout(() => {
-        location.href = 'verify.html?email=' + encodeURIComponent(regEmail.value);
-      }, 1500);
-    } else {
-      showPopup('ผิดพลาด', res.message);
+    if(r.success){
+      location.href="verify.html?email="+email.value;
+    }else{
+      showPopup("ผิดพลาด",r.message);
     }
   });
 }
 </script>
-
 </body>
 </html>
