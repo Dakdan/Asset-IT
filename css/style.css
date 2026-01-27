@@ -51,7 +51,6 @@ body{
 }
 
 .logo-text h2{
-  margin:0;
   font-size:18px;
   font-weight:600;
   color:#fff;
@@ -83,18 +82,49 @@ body{
   margin-bottom:14px;
 }
 
+/* ⭐ INPUT + BORDER COLOR */
 input{
   width:100%;
   padding:12px 14px;
   border-radius:14px;
-  border:2px solid #ff00ff;
+  border:2px solid #ffc1dc;           /* เส้นขอบปกติ */
   outline:none;
   font-size:15px;
+  transition:.2s;
 }
 
 input:focus{
-  border-color:#ff0080;
+  border-color:#ff0080;               /* ตอนโฟกัส */
   box-shadow:0 0 0 3px rgba(255,0,128,.15);
+}
+
+/* ✔ / ❌ STATE */
+.input-success{
+  border-color:#2ecc71;
+}
+
+.input-error{
+  border-color:#e74c3c;
+}
+
+/* =============================
+   ICON INPUT
+   ============================= */
+.icon-input{
+  position:relative;
+}
+
+.icon-input input{
+  padding-left:42px;
+}
+
+.input-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:18px;
+  pointer-events:none;
 }
 
 /* =============================
@@ -147,7 +177,7 @@ input:focus{
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:1000;               /* ⭐ ต่ำกว่า popup */
+  z-index:1000;
 }
 
 .popup{
@@ -157,15 +187,13 @@ input:focus{
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:1100;               /* ⭐ สูงกว่า overlay */
+  z-index:1100;
 }
 
-/* ⭐ FIX: ซ่อนแล้วต้องไม่กินคลิก */
 .hidden{
   display:none;
 }
 
-/* ⭐ FIX: บังคับให้การ์ดรับคลิกได้ */
 .overlay-card,
 .popup-card{
   background:#fff;
@@ -199,65 +227,9 @@ input:focus{
 }
 
 /* =============================
-   DASHBOARD / TABLE
-   ============================= */
-.table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-.table th{
-  background:#f5f5f5;
-  padding:10px;
-  font-weight:500;
-  border-bottom:1px solid #ddd;
-}
-
-.table td{
-  padding:10px;
-  border-bottom:1px solid #eee;
-  font-size:14px;
-}
-
-/* =============================
-   STATUS
-   ============================= */
-.status-true{
-  color:#2ecc71;
-  font-weight:500;
-}
-
-.status-false{
-  color:#e74c3c;
-  font-weight:500;
-}
-
-/* =============================
-   ADMIN BUTTON
-   ============================= */
-.btn-success{
-  background:#2ecc71;
-  color:#fff;
-  padding:6px 12px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-}
-
-.btn-danger{
-  background:#e74c3c;
-  color:#fff;
-  padding:6px 12px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-}
-
-/* =============================
    RESPONSIVE
    ============================= */
 @media (max-width:768px){
-
   body{
     align-items:flex-start;
     padding-top:30px;
@@ -266,44 +238,4 @@ input:focus{
   .login-wrapper{
     max-width:100%;
   }
-
-  .table thead{
-    display:none;
-  }
-
-  .table tr{
-    display:block;
-    margin-bottom:12px;
-    background:#fff;
-    border-radius:12px;
-    padding:12px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-  }
-
-  .table td{
-    display:flex;
-    justify-content:space-between;
-    border:none;
-    padding:6px 0;
-  }
-
- 
-   <h3 class="card-title">🔐 เข้าสู่ระบบ</h3>
-
-<div class="form-group icon-input">
-  <span class="input-icon">📧</span>
-  <input id="email" placeholder="Email">
-</div>
-
-<div class="form-group icon-input">
-  <span class="input-icon">🔑</span>
-  <input id="password" type="password" placeholder="Password">
-</div>
-
-<button class="btn-login" onclick="login()">🚀 เข้าสู่ระบบ</button>
-
-<div class="register-link">
-  ✍️ <a href="register.html">ลงทะเบียน</a> |
-  🔄 <a href="#" onclick="openForgot()">ขอรหัสใหม่</a>
-</div>
-
+}
