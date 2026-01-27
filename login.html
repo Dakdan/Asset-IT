@@ -5,33 +5,7 @@
   <title>Login | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- THEME -->
   <link rel="stylesheet" href="./css/style.css">
-
-  <!-- ICON (emoji-based ไม่พัง ไม่หาย) -->
-  <style>
-    .card-title{
-      text-align:center;
-      margin-bottom:18px;
-      color:#ff0080;
-      font-size:20px;
-      font-weight:600;
-    }
-    .icon-input{
-      position:relative;
-    }
-    .icon-input .input-icon{
-      position:absolute;
-      left:14px;
-      top:50%;
-      transform:translateY(-50%);
-      font-size:18px;
-      opacity:.8;
-    }
-    .icon-input input{
-      padding-left:44px;
-    }
-  </style>
 </head>
 <body>
 
@@ -52,33 +26,30 @@
   <!-- CARD -->
   <div class="login-card">
 
-    <h3 class="card-title">🔐 เข้าสู่ระบบ</h3>
-
-    <div class="form-group icon-input">
-      <span class="input-icon">📧</span>
-      <input id="email" placeholder="Email">
+    <div class="form-group">
+      <input id="email" placeholder="📧 Email">
     </div>
 
-    <div class="form-group icon-input">
-      <span class="input-icon">🔑</span>
-      <input id="password" type="password" placeholder="Password">
+    <div class="form-group">
+      <input id="password" type="password" placeholder="🔑 Password">
     </div>
 
-    <button class="btn-login" onclick="login()">🚀 เข้าสู่ระบบ</button>
+    <button class="btn-login" onclick="login()">
+      🔐 เข้าสู่ระบบ
+    </button>
 
     <div class="register-link">
-      ✍️ <a href="register.html">ลงทะเบียน</a> |
-      🔄 <a href="reset-password.html">ขอรหัสใหม่</a>
+      <a href="reset-password.html">ลืมรหัสผ่าน ?</a>
     </div>
-  </div>
 
+  </div>
 </div>
 
 <!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <p>กำลังตรวจสอบ...</p>
+    <p>กำลังเข้าสู่ระบบ...</p>
   </div>
 </div>
 
@@ -95,19 +66,9 @@
 <script src="./js/ui.js"></script>
 
 <script>
-/* =============================
-   SESSION CHECK
-   ============================= */
-(function(){
-  const s = sessionStorage.getItem('user');
-  if(s){
-    location.href = "index.html";
-  }
-})();
-
-/* =============================
-   LOGIN
-   ============================= */
+/* =========================
+   LOGIN FUNCTION
+   ========================= */
 function login(){
 
   if(!email.value || !password.value){
@@ -119,16 +80,16 @@ function login(){
 
   callAPI('login',{
     email: email.value,
-    password: password.value   // 🔐 backend จะ hash ตรวจเอง
+    password: password.value
   })
   .then(res=>{
     hideOverlay();
 
     if(res.ok){
-      sessionStorage.setItem('user', JSON.stringify(res.user));
+      localStorage.setItem("user", JSON.stringify(res.user));
       location.href = "index.html";
     }else{
-      showPopup("ผิดพลาด", res.message);
+      showPopup("เข้าสู่ระบบไม่สำเร็จ", res.message);
     }
   })
   .catch(()=>{
