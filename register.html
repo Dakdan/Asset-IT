@@ -4,7 +4,34 @@
   <meta charset="UTF-8">
   <title>Register | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- THEME -->
   <link rel="stylesheet" href="./css/style.css">
+
+  <!-- ICON STYLE -->
+  <style>
+    .card-title{
+      text-align:center;
+      margin-bottom:18px;
+      color:#ff0080;
+      font-size:20px;
+      font-weight:600;
+    }
+    .icon-input{
+      position:relative;
+    }
+    .icon-input .input-icon{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+      opacity:.8;
+    }
+    .icon-input input{
+      padding-left:44px;
+    }
+  </style>
 </head>
 <body>
 
@@ -16,7 +43,8 @@
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารงานซ่อมบำรุง</span>
+        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
       </div>
     </div>
   </div>
@@ -24,29 +52,35 @@
   <!-- CARD -->
   <div class="login-card">
 
-    <div class="form-group">
-      <input id="name" placeholder="ชื่อ">
+    <h3 class="card-title">✍️ ลงทะเบียนผู้ใช้งาน</h3>
+
+    <div class="form-group icon-input">
+      <span class="input-icon">👤</span>
+      <input id="name" placeholder="ชื่อ - นามสกุล">
     </div>
 
-    <div class="form-group">
-      <input id="surname" placeholder="นามสกุล">
-    </div>
-
-    <div class="form-group">
+    <div class="form-group icon-input">
+      <span class="input-icon">📧</span>
       <input id="email" placeholder="Email">
     </div>
 
-    <div class="form-group">
+    <div class="form-group icon-input">
+      <span class="input-icon">🏢</span>
+      <input id="department" placeholder="หน่วยงาน">
+    </div>
+
+    <div class="form-group icon-input">
+      <span class="input-icon">🔑</span>
       <input id="password" type="password" placeholder="Password">
     </div>
 
-    <button class="btn-login" onclick="register()">ลงทะเบียน</button>
+    <button class="btn-login" onclick="register()">🚀 ลงทะเบียน</button>
 
     <div class="register-link">
       มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
     </div>
-
   </div>
+
 </div>
 
 <!-- OVERLAY -->
@@ -60,7 +94,7 @@
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
+    <h3 id="popupTitle">แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
@@ -70,46 +104,31 @@
 <script src="./js/ui.js"></script>
 
 <script>
-// ---------- HASH PASSWORD ----------
-async function hashPassword(text){
-  const enc = new TextEncoder().encode(text);
-  const hash = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(hash))
-    .map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+/* =============================
+   REGISTER
+   ============================= */
+function register(){
 
-// ---------- REGISTER ----------
-async function register(){
-
-  if(!name.value || !surname.value || !email.value || !password.value){
+  if(!name.value || !email.value || !password.value){
     showPopup("แจ้งเตือน","กรุณากรอกข้อมูลให้ครบ");
     return;
   }
 
   showOverlay();
 
-  const hashed = await hashPassword(password.value);
-
   callAPI('register',{
     name: name.value,
-    surname: surname.value,
     email: email.value,
-    password: hashed
+    password: password.value,     // 🔐 backend จะ hash
+    department: department.value
   })
   .then(res=>{
     hideOverlay();
 
     if(res.ok){
-      // LOG (ไม่บังคับ backend จะรับหรือไม่)
-      callAPI('log',{
-        action:'REGISTER',
-        email: email.value
-      });
-
-      showPopup("สำเร็จ","ลงทะเบียนแล้ว กรุณายืนยันตัวตนจากอีเมล");
+      showPopup("สำเร็จ","ลงทะเบียนเรียบร้อย กรุณายืนยันตัวตน");
       setTimeout(()=>{
-        sessionStorage.setItem('verify_email', email.value);
-        location.href="verify.html";
+        location.href = "verify.html";
       },1200);
     }else{
       showPopup("ผิดพลาด", res.message);
