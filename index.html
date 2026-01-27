@@ -1,48 +1,32 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
-<div class="login-header">
-  <div class="logo-box">
-    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
-    <div class="logo-text">
-      <h2>โรงพยาบาลอุดรธานี</h2>
-      <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
-    </div>
-  </div>
-</div>
+  <meta charset="UTF-8">
+  <title>Dashboard | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
 <script>
-if(!localStorage.getItem("it_session")){
+const session = localStorage.getItem("it_session");
+if(!session){
   location.href="login.html";
 }
 </script>
 
-<div class="login-wrapper">
-  <div class="login-header">
-    <h2>📊 Dashboard</h2>
-  </div>
-
-  <div class="login-card">
-    <p id="userName"></p>
-    <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
-  </div>
+<div style="padding:20px">
+  <h2>ยินดีต้อนรับเข้าสู่ระบบ</h2>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <script>
-const u=JSON.parse(localStorage.getItem("it_session"));
-if(u) userName.innerText="ยินดีต้อนรับ "+u.name;
 function logout(){
   localStorage.removeItem("it_session");
   location.href="login.html";
 }
 </script>
+
 </body>
 </html>
