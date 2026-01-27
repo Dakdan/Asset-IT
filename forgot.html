@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Forgot Password | IT Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./css/style.css">
+<meta charset="UTF-8">
+<title>Forgot Password</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
@@ -15,72 +15,36 @@
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>ขอรหัสผ่านใหม่</h2>
-        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+        <span>ระบบจะส่งรหัสให้คุณ</span>
       </div>
     </div>
   </div>
 
   <div class="login-card">
 
-    <div class="form-group">
-      <input id="email" placeholder="Email ที่ลงทะเบียนไว้">
+    <div class="form-group row-input">
+      <span class="row-icon">📧</span>
+      <input id="email" placeholder="Email">
     </div>
 
-    <button class="btn-login" onclick="requestReset()">ขอรหัสใหม่</button>
-
-    <div class="register-link">
-      <a href="login.html">กลับไปหน้า Login</a>
-    </div>
+    <button class="btn-login" onclick="forgot()">📩 ส่งรหัส</button>
 
   </div>
 </div>
 
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังตรวจสอบ...</p>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3 id="popupTitle"></h3>
-    <p id="popupMsg"></p>
-    <button class="btn-login" onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
-
-<script src="./js/core.js"></script>
-
+<script src="./js/api.js"></script>
 <script>
-function requestReset(){
+function forgot(){
   if(!email.value){
-    showPopup("แจ้งเตือน","กรุณากรอก Email");
+    alert("กรุณากรอก Email");
     return;
   }
-
-  showOverlay();
-
-  callAPI('forgotPassword',{
-    email: email.value
-  })
-  .then(res=>{
-    hideOverlay();
-
+  callAPI('forgotPassword',{email:email.value}).then(res=>{
     if(res.ok){
-      showPopup("สำเร็จ","ระบบได้ส่งรหัสยืนยันแล้ว");
-      setTimeout(()=>{
-        location.href="verify.html?mode=reset&email="+encodeURIComponent(email.value);
-      },1200);
+      location.href="reset-password.html";
     }else{
-      showPopup("ผิดพลาด", res.message);
+      alert(res.message);
     }
-  })
-  .catch(()=>{
-    hideOverlay();
-    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
   });
 }
 </script>
