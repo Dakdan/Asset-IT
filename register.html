@@ -2,48 +2,62 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Verify | IT Maintenance</title>
+  <title>Register | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="./css/style.css">
+  <!-- THEME -->
+  <link rel="stylesheet" href="./css/theme.css">
 </head>
 <body>
 
-<div class="login-wrapper">
+<div class="auth-wrapper">
 
   <!-- HEADER -->
-  <div class="login-header">
+  <div class="auth-header">
     <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="logo">
       <div class="logo-text">
-        <h2>ยืนยันตัวตน</h2>
-        <span>กรอกรหัสยืนยันจากอีเมล</span>
+        <h2>โรงพยาบาลอุดรธานี</h2>
+        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
       </div>
     </div>
   </div>
 
   <!-- CARD -->
-  <div class="login-card">
+  <div class="auth-card">
+
+    <h3 class="card-title">📝 ลงทะเบียนผู้ใช้งาน</h3>
 
     <div class="form-group">
-      <input id="code" placeholder="Verification Code">
+      <span class="input-icon">👤</span>
+      <input id="name" placeholder="ชื่อ - นามสกุล">
     </div>
 
-    <button class="btn-login" onclick="verify()">ยืนยัน</button>
+    <div class="form-group">
+      <span class="input-icon">📧</span>
+      <input id="email" placeholder="Email">
+    </div>
 
-    <div class="register-link">
-      <a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a>
+    <div class="form-group">
+      <span class="input-icon">🔑</span>
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn" onclick="register()">🚀 ลงทะเบียน</button>
+
+    <div class="auth-link">
+      🔐 <a href="login.html">เข้าสู่ระบบ</a>
     </div>
 
   </div>
-
 </div>
 
 <!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
+  <div class="popup-card">
     <div class="spinner"></div>
-    <p>กำลังตรวจสอบ...</p>
+    <p>กำลังบันทึกข้อมูล...</p>
   </div>
 </div>
 
@@ -52,40 +66,42 @@
   <div class="popup-card">
     <h3 id="popupTitle">แจ้งเตือน</h3>
     <p id="popupMsg"></p>
-    <button class="btn-login" onclick="closePopup()">ตกลง</button>
+    <br>
+    <button class="btn" onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
-<script src="./js/api.js"></script>
-<script src="./js/ui.js"></script>
-
 <script>
-function verify(){
+/* =============================
+   UI CORE
+   ============================= */
+function showOverlay(){ overlay.classList.remove('hidden'); }
+function hideOverlay(){ overlay.classList.add('hidden'); }
+function showPopup(t,m){
+  popupTitle.innerText=t;
+  popupMsg.innerText=m;
+  popup.classList.remove('hidden');
+}
+function closePopup(){ popup.classList.add('hidden'); }
 
-  const codeEl = document.getElementById("code");
+/* =============================
+   REGISTER FLOW
+   ============================= */
+function register(){
 
-  if(!codeEl.value){
-    showPopup("แจ้งเตือน","กรุณากรอกรหัสยืนยัน");
+  if(!name.value || !email.value || !password.value){
+    showPopup("แจ้งเตือน","กรุณากรอกข้อมูลให้ครบ");
     return;
   }
 
   showOverlay();
 
-  callAPI('verify',{ code: codeEl.value })
-    .then(res=>{
-      hideOverlay();
-
-      if(res.ok){
-        showPopup("สำเร็จ","ยืนยันตัวตนเรียบร้อย");
-        setTimeout(()=>location.href="login.html",1200);
-      }else{
-        showPopup("ผิดพลาด", res.message);
-      }
-    })
-    .catch(()=>{
-      hideOverlay();
-      showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
-    });
+  // 🔧 mock flow (แทน backend)
+  setTimeout(()=>{
+    hideOverlay();
+    showPopup("สำเร็จ","ลงทะเบียนเรียบร้อย กรุณายืนยันตัวตน");
+    setTimeout(()=>location.href="verify.html",1200);
+  },1200);
 }
 </script>
 
