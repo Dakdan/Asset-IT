@@ -2,73 +2,59 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Verify Code</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify Account</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
 </head>
-<body>
 
+<body>
 <div class="login-wrapper">
+
   <div class="login-header">
-    <h2>ยืนยันตัวตน</h2>
-    <p>กรอกรหัสที่ส่งไปทาง Email</p>
+    <h1>ยืนยันตัวตน</h1>
+    <p>กรอกรหัสที่ได้รับทาง Email</p>
   </div>
 
   <div class="login-card">
-    <div class="form-group">
-      <input id="email" type="email" placeholder="Email">
-    </div>
-    <div class="form-group">
-      <input id="code" type="text" placeholder="Verification Code">
-    </div>
+    <input id="email" placeholder="Email">
+    <input id="code" placeholder="Verification Code">
 
-    <button class="btn-login" onclick="verify()">ยืนยัน</button>
-    <button class="btn-login" style="margin-top:10px;background:#aaa" onclick="resend()">ส่งรหัสใหม่</button>
+    <button onclick="verify()">ยืนยัน</button>
+    <button class="btn-secondary" onclick="resend()">ส่งรหัสใหม่</button>
   </div>
+
 </div>
 
-<!-- overlay -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p id="popMsg"></p>
-    <button onclick="closePopup()">ตกลง</button>
-  </div>
-</div>
+<div id="overlay" class="overlay hidden"></div>
+<div id="popup" class="popup hidden"></div>
 
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
+
 <script>
-function verify(){
+function verify() {
   showOverlay();
-  callAPI("verify",{
+  callAPI('verify', {
     email: email.value,
     code: code.value
-  }).then(res=>{
+  }).then(res => {
     hideOverlay();
-    if(res.success){
-      showPopup("สำเร็จ","ยืนยันเรียบร้อย รอ Admin อนุมัติ");
-      setTimeout(()=>location.href="login.html",2000);
-    }else{
-      showPopup("ผิดพลาด",res.message);
+    if (res.success) {
+      showPopup('สำเร็จ', 'ยืนยันเรียบร้อย');
+      setTimeout(()=>location.href='login.html',1500);
+    } else {
+      showPopup('ผิดพลาด', res.message);
     }
   });
 }
 
-function resend(){
+function resend() {
   showOverlay();
-  callAPI("resend",{email:email.value})
-    .then(res=>{
+  callAPI('resend', { email: email.value })
+    .then(r=>{
       hideOverlay();
-      showPopup("แจ้งเตือน",res.message);
+      showPopup('แจ้งเตือน', r.message);
     });
 }
 </script>
