@@ -8,24 +8,20 @@
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/ui.css">
 </head>
-
 <body>
 
 <div class="login-wrapper">
 
-  <!-- HEADER -->
   <div class="login-header">
-  <div class="logo-box">
-    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
-    <div class="logo-text">
-      <h2>โรงพยาบาลอุดรธานี</h2>
-      <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
+    <div class="logo-box">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
+      <div class="logo-text">
+        <h2>โรงพยาบาลอุดรธานี</h2>
+        <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
+      </div>
     </div>
   </div>
-</div>
 
-
-  <!-- CARD -->
   <div class="login-card">
     <div class="form-group">
       <input id="email" placeholder="Email">
@@ -44,7 +40,6 @@
 
 </div>
 
-<!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
@@ -52,7 +47,6 @@
   </div>
 </div>
 
-<!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
     <h3 id="popupTitle">แจ้งเตือน</h3>
@@ -63,23 +57,17 @@
 
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
-
 <script>
 function login(){
   showOverlay();
-
   callAPI('login',{
     email: email.value,
     password: password.value
   }).then(res=>{
     hideOverlay();
-
     if(res.ok){
-      localStorage.setItem("it_session", JSON.stringify({
-        token: res.data.token,
-        role: res.data.role
-      }));
-      location.href = "index.html";
+      localStorage.setItem("it_session", JSON.stringify(res.data));
+      location.href="index.html";
     }else{
       showPopup("ผิดพลาด", res.message);
     }
