@@ -287,4 +287,23 @@ input:focus{
     padding:6px 0;
   }
 
-  .ta
+ 
+   <h3 class="card-title">🔐 เข้าสู่ระบบ</h3>
+
+<div class="form-group icon-input">
+  <span class="input-icon">📧</span>
+  <input id="email" placeholder="Email">
+</div>
+
+<div class="form-group icon-input">
+  <span class="input-icon">🔑</span>
+  <input id="password" type="password" placeholder="Password">
+</div>
+
+<button class="btn-login" onclick="login()">🚀 เข้าสู่ระบบ</button>
+
+<div class="register-link">
+  ✍️ <a href="register.html">ลงทะเบียน</a> |
+  🔄 <a href="#" onclick="openForgot()">ขอรหัสใหม่</a>
+</div>
+
