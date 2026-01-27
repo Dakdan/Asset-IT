@@ -24,15 +24,24 @@
     .asset-card-new { background: white; border: 2px solid #000; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; }
   </style>
 <body>
-<div class="wrapper">
-    <div class="header">
-    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
-    <div class="logo-text">
-      <h2>โรงพยาบาลอุดรธานี</h2>
-      <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
-      <span>หน่วยงาน: เทคโนโลยีสารสนเทศ</span>
+  <div class="max-w-md mx-auto px-2 pt-1">    
+    <div class="header-banner p-2 mb-2 flex items-center gap-1 text-white">
+      <div class="bg-white p-1 rounded-xl"><img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" alt="Logo" class="w-12 h-12 object-contain"></div>
+      <div>
+        <h1 class="text-center text-lg font-bold ">โรงพยาบาลอุดรธานี</h1>
+        <p class="text-center text-[10px] opacity-90">ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+      </div>
     </div>
-  </div> 
+
+    <div id="login-view" class="main-card p-8">
+      <div class="flex items-center gap-1 mb-6 text-[#ff2d92]"><span class="text-2xl">🔐</span> <h2 class="text-xl font-bold">เข้าสู่ระบบ</h2></div>
+      <div class="space-y-4">
+        <input type="text" id="user" placeholder="Username" class="input-style">
+        <input type="password" id="pass" placeholder="Password" class="input-style">
+        <button onclick="handleLogin()" class="w-full btn-submit py-4">🛡️ Login</button>
+        <p class="text-center text-sm">ยังไม่มีบัญชี? <a href="#" onclick="showRegister()" class="text-pink-600 underline">ลงทะเบียน</a></p>
+      </div>
+    </div>
   <div class="form">
     <div class="field">
       <i class="fa fa-envelope"></i>
