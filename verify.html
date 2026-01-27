@@ -24,11 +24,17 @@
 
   <!-- CARD -->
   <div class="login-card">
+
     <div class="form-group">
       <input id="code" placeholder="Verification Code">
     </div>
 
     <button class="btn-login" onclick="verify()">ยืนยัน</button>
+
+    <div class="register-link">
+      <a href="login.html">กลับไปหน้าเข้าสู่ระบบ</a>
+    </div>
+
   </div>
 
 </div>
@@ -56,14 +62,16 @@
 <script>
 function verify(){
 
-  if(!code.value){
+  const codeEl = document.getElementById("code");
+
+  if(!codeEl.value){
     showPopup("แจ้งเตือน","กรุณากรอกรหัสยืนยัน");
     return;
   }
 
   showOverlay();
 
-  callAPI('verify',{ code: code.value })
+  callAPI('verify',{ code: codeEl.value })
     .then(res=>{
       hideOverlay();
 
@@ -71,7 +79,7 @@ function verify(){
         showPopup("สำเร็จ","ยืนยันตัวตนเรียบร้อย");
         setTimeout(()=>location.href="login.html",1200);
       }else{
-        showPopup("ผิดพลาด",res.message);
+        showPopup("ผิดพลาด", res.message);
       }
     })
     .catch(()=>{
