@@ -2,20 +2,12 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>IT Maintenance | Dashboard</title>
+  <title>Dashboard | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-
-<script>
-  // 🔐 Guard หน้า
-  const session = localStorage.getItem("it_session");
-  if (!session) {
-    location.href = "login.html";
-  }
-</script>
 
 <div class="login-wrapper">
 
@@ -24,20 +16,21 @@
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
-        <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
-        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
+        <h2>ระบบแจ้งซ่อมบำรุง</h2>
+        <span>โรงพยาบาลอุดรธานี</span>
+        <span id="roleText"></span>
       </div>
     </div>
   </div>
 
-  <!-- CONTENT -->
+  <!-- CARD -->
   <div class="login-card">
 
-    <h3>📊 Dashboard</h3>
-    <p style="margin-bottom:16px;">
-      ยินดีต้อนรับคุณ <b id="userName">-</b>
-    </p>
+    <h3>Dashboard</h3>
+
+    <p>ยินดีต้อนรับเข้าสู่ระบบ</p>
+
+    <br>
 
     <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
 
@@ -65,21 +58,41 @@
 <script src="./js/ui.js"></script>
 
 <script>
-  // แสดงชื่อผู้ใช้
-  const user = JSON.parse(localStorage.getItem("it_session"));
-  if (user && user.name) {
-    document.getElementById("userName").innerText = user.name;
-  } else {
-    document.getElementById("userName").innerText = "ผู้ใช้งานระบบ";
-  }
+/* =============================
+   CHECK SESSION (สำคัญที่สุด)
+   ============================= */
+const session = localStorage.getItem("it_session");
 
-  function logout(){
-    showOverlay();
-    setTimeout(()=>{
-      localStorage.removeItem("it_session");
-      location.href = "login.html";
-    }, 600);
-  }
+if(!session){
+  // ❌ ไม่มี session → เด้งกลับ login
+  location.replace("login.html");
+}
+
+/* =============================
+   LOAD USER INFO
+   ============================= */
+try{
+  const user = JSON.parse(session);
+  document.getElementById("roleText").innerText =
+    "สิทธิ์การใช้งาน: " + (user.role || "ผู้ใช้งาน");
+
+}catch(e){
+  // session พัง
+  localStorage.removeItem("it_session");
+  location.replace("login.html");
+}
+
+/* =============================
+   LOGOUT
+   ============================= */
+function logout(){
+  showOverlay();
+
+  setTimeout(()=>{
+    localStorage.removeItem("it_session");
+    location.replace("login.html");
+  },800);
+}
 </script>
 
 </body>
