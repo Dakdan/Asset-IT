@@ -19,14 +19,21 @@
 
 <div class="login-wrapper">
 
+  <!-- HEADER / LOGO -->
   <div class="login-header">
-    <h2>📊 IT Dashboard</h2>
+    <div class="logo-box">
+      <div class="logo-icon">🛠️</div>
+      <div class="logo-text">
+        <h2>IT Maintenance</h2>
+        <span>ระบบแจ้งซ่อมบำรุง</span>
+      </div>
+    </div>
   </div>
 
   <div class="login-card">
     <div class="card-box">
       <h3>ยินดีต้อนรับ</h3>
-      <p id="userName"></p>
+      <p id="userName">-</p>
     </div>
 
     <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
@@ -45,8 +52,8 @@
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
-    <p>-</p>
+    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <p id="popupMsg">-</p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
@@ -54,7 +61,9 @@
 <script src="./js/ui.js"></script>
 <script>
 const user = JSON.parse(localStorage.getItem("it_session"));
-if (user) userName.innerText = user.name;
+if (user) {
+  document.getElementById("userName").innerText = user.name;
+}
 
 function logout() {
   localStorage.removeItem("it_session");
