@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Forgot Password</title>
+<title>ขอรหัสผ่านใหม่ | IT Maintenance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="./css/style.css">
 </head>
@@ -10,40 +10,64 @@
 
 <div class="login-wrapper">
 
+  <!-- HEADER -->
   <div class="login-header">
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>ขอรหัสผ่านใหม่</h2>
-        <span>ระบบจะส่งรหัสให้คุณ</span>
+        <span>ระบบจะส่งรหัสไปยัง Email</span>
       </div>
     </div>
   </div>
 
+  <!-- CARD -->
   <div class="login-card">
 
+    <!-- EMAIL -->
     <div class="form-group row-input">
       <span class="row-icon">📧</span>
-      <input id="email" placeholder="Email">
+      <input id="email" type="email" placeholder="กรอก Email ที่ลงทะเบียน">
     </div>
 
-    <button class="btn-login" onclick="forgot()">📩 ส่งรหัส</button>
+    <button class="btn-login" onclick="forgotPassword()">📩 ส่งรหัสรีเซ็ต</button>
 
+    <div class="register-link">
+      🔐 <a href="login.html">กลับไปหน้า Login</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังส่งรหัสรีเซ็ต...</p>
   </div>
 </div>
 
 <script src="./js/api.js"></script>
 <script>
-function forgot(){
+function forgotPassword(){
+
   if(!email.value){
     alert("กรุณากรอก Email");
     return;
   }
-  callAPI('forgotPassword',{email:email.value}).then(res=>{
+
+  document.getElementById('overlay').classList.remove('hidden');
+
+  callAPI('forgotPassword',{
+    email: email.value
+  }).then(res=>{
+    document.getElementById('overlay').classList.add('hidden');
+
     if(res.ok){
-      location.href="reset-password.html";
+      alert("ระบบส่งรหัสรีเซ็ตไปที่ Email แล้ว");
+      location.href = "reset-password.html";
     }else{
-      alert(res.message);
+      alert(res.message || "ไม่พบ Email ในระบบ");
     }
   });
 }
