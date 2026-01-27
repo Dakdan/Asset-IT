@@ -1,71 +1,84 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Register | IT Maintenance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="./css/style.css">
+  <meta charset="UTF-8" />
+  <title>Register | ระบบแจ้งซ่อมบำรุง</title>
+
+  <!-- เรียกใช้ CSS กลาง -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 
-<div class="login-wrapper">
+<!-- ===== Overlay ===== -->
+<div class="overlay"></div>
 
-  <div class="login-header">
-    <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
-      <div class="logo-text">
-        <h2>ลงทะเบียน</h2>
-        <span>สร้างบัญชีผู้ใช้งาน</span>
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="logo-box">
+    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="logo">
+    <div class="logo-text">
+      <h2>โรงพยาบาลอุดรธานี</h2>
+      <span class="system">ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+      <span class="dept">หน่วยงาน: เทคโนโลยีสารสนเทศ</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Main ===== -->
+<div class="container">
+
+  <div class="card">
+    <h3 class="card-title">ลงทะเบียนผู้ใช้งาน</h3>
+
+    <form id="registerForm">
+
+      <div class="input-group">
+        <i class="fa fa-user"></i>
+        <input type="text" placeholder="ชื่อผู้ใช้งาน" required>
       </div>
-    </div>
+
+      <div class="input-group">
+        <i class="fa fa-id-card"></i>
+        <input type="text" placeholder="ชื่อ - สกุล" required>
+      </div>
+
+      <div class="input-group">
+        <i class="fa fa-building"></i>
+        <input type="text" placeholder="หน่วยงาน" required>
+      </div>
+
+      <div class="input-group">
+        <i class="fa fa-envelope"></i>
+        <input type="email" placeholder="อีเมล" required>
+      </div>
+
+      <div class="input-group">
+        <i class="fa fa-lock"></i>
+        <input type="password" placeholder="รหัสผ่าน" required>
+      </div>
+
+      <div class="input-group">
+        <i class="fa fa-lock"></i>
+        <input type="password" placeholder="ยืนยันรหัสผ่าน" required>
+      </div>
+
+      <button type="submit" class="btn primary">
+        <i class="fa fa-user-plus"></i> สมัครสมาชิก
+      </button>
+
+      <div class="footer-link">
+        มีบัญชีแล้ว?
+        <a href="login.html">เข้าสู่ระบบ</a>
+      </div>
+
+    </form>
   </div>
 
-  <div class="login-card">
-
-    <div class="form-group row-input">
-      <span class="row-icon">📧</span>
-      <input id="email" placeholder="Email">
-    </div>
-
-    <div class="form-group row-input">
-      <span class="row-icon">👤</span>
-      <input id="name" placeholder="ชื่อ - นามสกุล">
-    </div>
-
-    <div class="form-group row-input">
-      <span class="row-icon">🔑</span>
-      <input id="password" type="password" placeholder="Password">
-    </div>
-
-    <button class="btn-login" onclick="register()">📝 ลงทะเบียน</button>
-
-    <div class="register-link">
-      🔐 <a href="login.html">กลับไปหน้า Login</a>
-    </div>
-
-  </div>
 </div>
-
-<script src="./js/api.js"></script>
-<script>
-function register(){
-  if(!email.value || !name.value || !password.value){
-    alert("กรุณากรอกข้อมูลให้ครบ");
-    return;
-  }
-  callAPI('register',{
-    email:email.value,
-    name:name.value,
-    password:password.value
-  }).then(res=>{
-    if(res.ok){
-      location.href="verify.html";
-    }else{
-      alert(res.message);
-    }
-  });
-}
-</script>
 
 </body>
 </html>
