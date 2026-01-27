@@ -3,70 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Log</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
 </head>
+<body>
 
-<body class="login-page">
+<div class="login-wrapper" style="max-width:900px">
+  <div class="login-header">
+    <h2>LOG การใช้งานระบบ</h2>
+  </div>
 
-<div class="login-wrapper">
-<div class="login-card" style="max-width:1000px">
-
-<h2>LOG การใช้งานระบบ</h2>
-
-<table class="table">
-<thead>
-<tr>
-  <th>เวลา</th>
-  <th>Action</th>
-  <th>Email</th>
-  <th>Detail</th>
-</tr>
-</thead>
-<tbody id="logTable"></tbody>
-</table>
-
+  <div class="login-card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>เวลา</th>
+          <th>Action</th>
+          <th>Email</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody id="logTb"></tbody>
+    </table>
+  </div>
 </div>
-</div>
 
+<script src="./js/api.js"></script>
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-const user = JSON.parse(localStorage.getItem('it_user'));
+const admin = JSON.parse(localStorage.getItem("it_user"));
+if(!admin || admin.role!=="ADMIN") location.href="login.html";
 
-if(!user || user.role!=='ADMIN'){
-  location.href='login.html';
-}
-
-function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
-}
-
-function loadLog(){
-  jsonp(
-    GAS_URL+'?action=getLog&role=ADMIN',
-    'render'
-  );
-}
-
-function render(res){
+callAPI("getLog",{role:"ADMIN"}).then(res=>{
   if(!res.success) return;
-  logTable.innerHTML='';
-  res.data.slice(1).reverse().forEach(l=>{
-    logTable.innerHTML+=`
-      <tr>
-        <td>${l[0]}</td>
-        <td>${l[1]}</td>
-        <td>${l[2]}</td>
-        <td>${l[3]}</td>
-      </tr>`;
+  res.data.slice(1).forEach(l=>{
+    logTb.innerHTML+=`
+    <tr>
+      <td>${l[0]}</td>
+      <td>${l[1]}</td>
+      <td>${l[2]}</td>
+      <td>${l[3]}</td>
+    </tr>`;
   });
-}
-
-loadLog();
+});
 </script>
-
 </body>
 </html>
