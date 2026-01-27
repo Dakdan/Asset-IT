@@ -3,33 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Approve</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./css/ui.css">
 </head>
+<body>
 
-<body class="login-page">
+<div class="login-wrapper" style="max-width:900px">
+  <div class="login-header">
+    <h2>อนุมัติผู้ใช้งาน</h2>
+  </div>
 
-<div class="login-wrapper">
-  <div class="login-card" style="max-width:900px">
-
-    <h2>อนุมัติผู้ใช้งาน IT</h2>
-
+  <div class="login-card">
     <table class="table">
       <thead>
         <tr>
           <th>Email</th>
-          <th>ชื่อ</th>
-          <th>สถานะ</th>
-          <th>จัดการ</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="tb"></tbody>
     </table>
-
   </div>
 </div>
 
-<!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
@@ -37,72 +35,47 @@
   </div>
 </div>
 
-<!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
-    <p id="popupMsg"></p>
+    <h3>แจ้งเตือน</h3>
+    <p id="popMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
+<script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
-
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
-const user = JSON.parse(localStorage.getItem('it_user'));
-
-if(!user || user.role!=='ADMIN'){
-  location.href='login.html';
-}
-
-function jsonp(url, cb){
-  const s=document.createElement('script');
-  s.src=url+'&callback='+cb;
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),3000);
-}
+const admin = JSON.parse(localStorage.getItem("it_user"));
+if(!admin || admin.role!=="ADMIN") location.href="login.html";
 
 function load(){
-  jsonp(GAS_URL+'?action=getRegister','render');
-}
-
-function render(res){
-  if(!res.success) return;
-  tb.innerHTML='';
-  res.data.forEach(r=>{
-    if(r[10]==='ACTIVE'){
-      tb.innerHTML+=`
+  callAPI("getRegister",{role:"ADMIN"}).then(res=>{
+    if(!res.success) return;
+    tb.innerHTML="";
+    res.data.forEach(r=>{
+      if(r.status==="ACTIVE"){
+        tb.innerHTML+=`
         <tr>
-          <td>${r[1]}</td>
-          <td>${r[2]||'-'}</td>
+          <td>${r.email}</td>
           <td class="status-true">VERIFIED</td>
-          <td>
-            <button class="btn-success" onclick="approve('${r[1]}')">
-              อนุมัติ
-            </button>
-          </td>
+          <td><button class="btn-success" onclick="approve('${r.email}')">อนุมัติ</button></td>
         </tr>`;
-    }
+      }
+    });
   });
 }
 
 function approve(email){
   showOverlay();
-  jsonp(
-    GAS_URL+'?action=approve&email='+encodeURIComponent(email),
-    'approveCallback'
-  );
-}
-
-function approveCallback(res){
-  hideOverlay();
-  showPopup(res.success?"สำเร็จ":"ผิดพลาด",res.message);
-  load();
+  callAPI("approve",{email,admin:admin.userid}).then(res=>{
+    hideOverlay();
+    showPopup("แจ้งเตือน",res.message);
+    load();
+  });
 }
 
 load();
 </script>
-
 </body>
 </html>
