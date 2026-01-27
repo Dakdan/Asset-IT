@@ -2,88 +2,55 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>IT Login</title>
+<title>Login | IT Maintenance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
 </head>
-
 <body>
 
 <div class="login-wrapper">
+
   <div class="login-header">
-    <h2>IT Service</h2>
-    <p>เข้าสู่ระบบ</p>
+    <div class="logo-box">
+      <div class="logo-icon">🛠️</div>
+      <div class="logo-text">
+        <h2>IT Maintenance</h2>
+        <span>ระบบแจ้งซ่อมบำรุง</span>
+      </div>
+    </div>
   </div>
 
   <div class="login-card">
-    <div class="form-group">
-      <input id="email" placeholder="Email">
+    <h3>เข้าสู่ระบบ</h3>
+    <input id="user" placeholder="ชื่อผู้ใช้">
+    <input id="pass" type="password" placeholder="รหัสผ่าน">
+    <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
+
+    <div class="btn-link">
+      <a href="register.html">สมัครใช้งาน</a>
     </div>
-    <div class="form-group">
-      <input id="password" type="password" placeholder="Password">
-    </div>
-    <button class="btn-login" onclick="login()">LOGIN</button>
   </div>
+
 </div>
 
-<div class="overlay hidden" id="overlay">
+<!-- overlay + popup -->
+<div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <div>กำลังเข้าสู่ระบบ...</div>
+    <p>กำลังโหลด...</p>
   </div>
 </div>
 
-<script>
-/** 🔴 ใส่ URL GAS ของคุณตรงนี้ */
-const API = 'https://script.google.com/macros/s/AKfycbzNSgpYNigJX7W-RUPq8SLN4e687pE55p72KsbM-nWFcPefKDhjzYAflsm78i42IW7qrw/exec';
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle"></h3>
+    <p id="popupMsg"></p>
+    <button onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
 
-const overlay = document.getElementById('overlay');
-const emailEl = document.getElementById('email');
-const passwordEl = document.getElementById('password');
-
-function login() {
-  const email = emailEl.value.trim();
-  const password = passwordEl.value.trim();
-
-  if (!email || !password) {
-    alert('กรุณากรอก Email และ Password');
-    return;
-  }
-
-  overlay.classList.remove('hidden');
-
-  fetch(`${API}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`)
-    .then(r => r.json())
-    .then(res => {
-      overlay.classList.add('hidden');
-
-      if (!res.ok) {
-        alert(res.message || 'Login failed');
-        return;
-      }
-
-      // ✅ เก็บข้อมูลถูกต้อง
-      localStorage.setItem('it_user', JSON.stringify({
-        email: email,
-        token: res.data.token,
-        role: res.data.role
-      }));
-
-      // ✅ flow เดิมของคุณ
-      if (res.data.forceChange === true) {
-        location.href = 'change-password.html';
-      } else if (res.data.role === 'ADMIN') {
-        location.href = 'admin-approve.html';
-      } else {
-        alert('Login success');
-      }
-    })
-    .catch(err => {
-      overlay.classList.add('hidden');
-      console.error(err);
-      alert('ไม่สามารถเชื่อมต่อระบบได้');
-    });
-}
-</script>
-
+<script src="./js/ui.js"></script>
+<script src="./js/auth.js"></script>
 </body>
 </html>
