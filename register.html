@@ -5,33 +5,8 @@
   <title>Register | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- THEME -->
+  <!-- THEME เดียวกัน -->
   <link rel="stylesheet" href="./css/style.css">
-
-  <!-- ICON STYLE -->
-  <style>
-    .card-title{
-      text-align:center;
-      margin-bottom:18px;
-      color:#ff0080;
-      font-size:20px;
-      font-weight:600;
-    }
-    .icon-input{
-      position:relative;
-    }
-    .icon-input .input-icon{
-      position:absolute;
-      left:14px;
-      top:50%;
-      transform:translateY(-50%);
-      font-size:18px;
-      opacity:.8;
-    }
-    .icon-input input{
-      padding-left:44px;
-    }
-  </style>
 </head>
 <body>
 
@@ -52,35 +27,36 @@
   <!-- CARD -->
   <div class="login-card">
 
-    <h3 class="card-title">✍️ ลงทะเบียนผู้ใช้งาน</h3>
+    <h3 class="card-title" style="text-align:center;margin-bottom:18px;">
+      ✍️ ลงทะเบียนผู้ใช้งาน
+    </h3>
 
+    <!-- NAME -->
     <div class="form-group icon-input">
       <span class="input-icon">👤</span>
       <input id="name" placeholder="ชื่อ - นามสกุล">
     </div>
 
+    <!-- EMAIL -->
     <div class="form-group icon-input">
       <span class="input-icon">📧</span>
       <input id="email" placeholder="Email">
     </div>
 
-    <div class="form-group icon-input">
-      <span class="input-icon">🏢</span>
-      <input id="department" placeholder="หน่วยงาน">
-    </div>
-
+    <!-- PASSWORD -->
     <div class="form-group icon-input">
       <span class="input-icon">🔑</span>
       <input id="password" type="password" placeholder="Password">
     </div>
 
-    <button class="btn-login" onclick="register()">🚀 ลงทะเบียน</button>
+    <button class="btn-login" onclick="register()">📝 ลงทะเบียน</button>
 
+    <!-- LINKS -->
     <div class="register-link">
-      มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+      🔐 <a href="login.html">เข้าสู่ระบบ</a>
     </div>
-  </div>
 
+  </div>
 </div>
 
 <!-- OVERLAY -->
@@ -100,13 +76,11 @@
   </div>
 </div>
 
+<!-- JS (ของเดิมทั้งหมด) -->
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
 
 <script>
-/* =============================
-   REGISTER
-   ============================= */
 function register(){
 
   if(!name.value || !email.value || !password.value){
@@ -119,17 +93,14 @@ function register(){
   callAPI('register',{
     name: name.value,
     email: email.value,
-    password: password.value,     // 🔐 backend จะ hash
-    department: department.value
+    password: password.value
   })
   .then(res=>{
     hideOverlay();
 
     if(res.ok){
       showPopup("สำเร็จ","ลงทะเบียนเรียบร้อย กรุณายืนยันตัวตน");
-      setTimeout(()=>{
-        location.href = "verify.html";
-      },1200);
+      setTimeout(()=>location.href="verify.html",1200);
     }else{
       showPopup("ผิดพลาด", res.message);
     }
