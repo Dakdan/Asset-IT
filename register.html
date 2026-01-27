@@ -27,11 +27,11 @@
   <div class="login-card">
 
     <div class="form-group">
-      <input id="name" placeholder="ชื่อ - นามสกุล">
+      <input id="fullname" placeholder="ชื่อ - นามสกุล">
     </div>
 
     <div class="form-group">
-      <input id="email" placeholder="Email">
+      <input id="email" type="email" placeholder="Email">
     </div>
 
     <div class="form-group">
@@ -70,7 +70,11 @@
 <script>
 function register(){
 
-  if(!name.value || !email.value || !password.value){
+  const fullname = document.getElementById("fullname");
+  const emailEl  = document.getElementById("email");
+  const passwordEl = document.getElementById("password");
+
+  if(!fullname.value || !emailEl.value || !passwordEl.value){
     showPopup("แจ้งเตือน","กรุณากรอกข้อมูลให้ครบ");
     return;
   }
@@ -78,9 +82,9 @@ function register(){
   showOverlay();
 
   callAPI('register',{
-    name: name.value,
-    email: email.value,
-    password: password.value
+    name: fullname.value,
+    email: emailEl.value,
+    password: passwordEl.value
   })
   .then(res=>{
     hideOverlay();
