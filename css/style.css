@@ -17,7 +17,7 @@ body{
 }
 
 /* =============================
-   LOGIN / REGISTER WRAPPER
+   WRAPPER
    ============================= */
 .login-wrapper{
   width:100%;
@@ -28,58 +28,40 @@ body{
 /* =============================
    HEADER (LOGO + TEXT)
    ============================= */
-.login-header {
-  background: linear-gradient(135deg, #b1005d, #ff007f);
-  padding: 20px;
-  border-radius: 18px 18px 0 0;
+.login-header{
+  background:linear-gradient(135deg,#b1005d,#ff007f);
+  padding:20px;
+  border-radius:20px 20px 0 0;
 }
 
-.logo-box {
-  display: flex;
-  align-items: center;   /* ⭐ ตัวนี้ทำให้ logo + ตัวหนังสืออยู่ระดับเดียวกัน */
-  gap: 12px;
+.logo-box{
+  display:flex;
+  align-items:center;      /* ⭐ สำคัญ */
+  gap:14px;
 }
 
-.header-logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-.logo-text h2 {
-  margin: 0;
-  font-size: 18px;
-  color: #fff;
-  line-height: 1.2;
-}
-
-.logo-text span {
-  font-size: 13px;
-  color: #ffe3f0;
-  line-height: 1.2;
-}
-
-
-
-.logo-img{
-  width:56px;
-  height:56px;
+.header-logo{
+  width:64px;
+  height:64px;
   background:#fff;
   border-radius:50%;
   padding:5px;
   object-fit:contain;
+  flex-shrink:0;
 }
 
 .logo-text h2{
   margin:0;
   font-size:18px;
   font-weight:600;
+  color:#fff;
   line-height:1.2;
 }
 
 .logo-text span{
-  font-size:12px;
-  opacity:.9;
+  font-size:13px;
+  color:#ffe3f0;
+  line-height:1.2;
 }
 
 /* =============================
@@ -90,14 +72,6 @@ body{
   padding:26px;
   border-radius:0 0 20px 20px;
   box-shadow:0 10px 25px rgba(0,0,0,.15);
-}
-
-.login-card h3{
-  color:#ff0080;
-  margin-bottom:16px;
-  display:flex;
-  align-items:center;
-  gap:6px;
 }
 
 /* =============================
@@ -162,7 +136,7 @@ input:focus{
 }
 
 /* =============================
-   OVERLAY / POPUP (สำคัญ)
+   OVERLAY / POPUP
    ============================= */
 .overlay,
 .popup{
@@ -195,7 +169,14 @@ input:focus{
   min-width:260px;
 }
 
-/* spinner */
+.popup-card h3{
+  margin-bottom:10px;
+  color:#ff0080;
+}
+
+/* =============================
+   SPINNER
+   ============================= */
 .spinner{
   width:42px;
   height:42px;
@@ -211,7 +192,7 @@ input:focus{
 }
 
 /* =============================
-   TABLE (ADMIN)
+   DASHBOARD / TABLE
    ============================= */
 .table{
   width:100%;
@@ -234,11 +215,18 @@ input:focus{
 /* =============================
    STATUS
    ============================= */
-.status-true{color:#2ecc71;font-weight:500;}
-.status-false{color:#e74c3c;font-weight:500;}
+.status-true{
+  color:#2ecc71;
+  font-weight:500;
+}
+
+.status-false{
+  color:#e74c3c;
+  font-weight:500;
+}
 
 /* =============================
-   BUTTON (ADMIN)
+   ADMIN BUTTON
    ============================= */
 .btn-success{
   background:#2ecc71;
@@ -246,6 +234,7 @@ input:focus{
   padding:6px 12px;
   border-radius:8px;
   border:none;
+  cursor:pointer;
 }
 
 .btn-danger{
@@ -254,39 +243,46 @@ input:focus{
   padding:6px 12px;
   border-radius:8px;
   border:none;
-}
-.header-logo{
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  background:#fff;
-  border-radius:50%;
-  padding:4px;
-  flex-shrink: 0;
+  cursor:pointer;
 }
 
 /* =============================
    RESPONSIVE
    ============================= */
 @media (max-width:768px){
-  .login-wrapper{max-width:100%;}
 
-  .table thead{display:none;}
+  body{
+    align-items:flex-start;
+    padding-top:30px;
+  }
+
+  .login-wrapper{
+    max-width:100%;
+  }
+
+  .table thead{
+    display:none;
+  }
+
   .table tr{
     display:block;
     margin-bottom:12px;
     background:#fff;
     border-radius:12px;
     padding:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
   }
+
   .table td{
     display:flex;
     justify-content:space-between;
     border:none;
     padding:6px 0;
   }
+
   .table td::before{
     content:attr(data-label);
     color:#666;
+    font-weight:500;
   }
 }
