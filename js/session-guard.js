@@ -1,87 +1,41 @@
-<script>
-/**
- * Session Guard v1.0 (FINAL)
- * ใช้ได้ทุกหน้า
- */
-
 (async function () {
   const CONFIG = {
-    API_BASE: 'https://script.google.com/macros/s/XXXXXXXXXXXX/exec', // 🔴 แก้ของจริง
+    API_BASE: 'https://script.google.com/macros/s/DEPLOY_ID/exec', // 🔴 แก้
     LOGIN_PAGE: 'login.html',
     CHANGE_PASSWORD_PAGE: 'change-password.html',
     HOME_PAGE: 'index.html',
     ADMIN_PAGE: 'admin.html'
   };
 
-  const currentPage = location.pathname.split('/').pop();
+  const page = location.pathname.split('/').pop();
+  const PUBLIC = ['', 'login.html', 'register.html'];
 
-  // หน้าที่ไม่ต้อง guard
-  const PUBLIC_PAGES = [
-    '',
-    'login.html',
-    'register.html'
-  ];
-
-  if (PUBLIC_PAGES.includes(currentPage)) return;
+  if (PUBLIC.includes(page)) return;
 
   try {
     const token = localStorage.getItem('session_token');
+    if (!token) return location.replace(CONFIG.LOGIN_PAGE);
 
-    // ❌ ไม่มี token → กลับไป login
-    if (!token) {
-      redirect(CONFIG.LOGIN_PAGE);
-      return;
-    }
-
-    // 🔍 ตรวจ session กับ backend
     const res = await fetch(`${CONFIG.API_BASE}?action=checkSession`, {
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
+      headers: { Authorization: 'Bearer ' + token }
     });
+    const r = await res.json();
 
-    const data = await res.json();
-
-    // ❌ session ไม่ผ่าน
-    if (!data.ok) {
-      clearSession();
-      redirect(CONFIG.LOGIN_PAGE);
-      return;
+    if (!r.ok) {
+      localStorage.clear();
+      return location.replace(CONFIG.LOGIN_PAGE);
     }
 
-    const { role, firstLogin } = data.user;
+    const { role, firstLogin } = r.data;
 
-    // 🔐 บังคับเปลี่ยนรหัสครั้งแรก
-    if (firstLogin && currentPage !== CONFIG.CHANGE_PASSWORD_PAGE) {
-      redirect(CONFIG.CHANGE_PASSWORD_PAGE);
-      return;
-    }
+    if (firstLogin && page !== CONFIG.CHANGE_PASSWORD_PAGE)
+      return location.replace(CONFIG.CHANGE_PASSWORD_PAGE);
 
-    // 🛡️ หน้า admin แต่ไม่ใช่ admin
-    if (currentPage === CONFIG.ADMIN_PAGE && role !== 'admin') {
-      redirect(CONFIG.HOME_PAGE);
-      return;
-    }
+    if (page === CONFIG.ADMIN_PAGE && role !== 'ADMIN')
+      return location.replace(CONFIG.HOME_PAGE);
 
-    // ✅ ผ่านทุกเงื่อนไข = ใช้งานได้
-    console.log('✅ Session Guard: OK');
-
-  } catch (err) {
-    console.error('Session Guard error:', err);
-    clearSession();
-    redirect(CONFIG.LOGIN_PAGE);
-  }
-
-  // ===== helper =====
-  function redirect(page) {
-    if (!location.pathname.endsWith(page)) {
-      location.replace(page);
-    }
-  }
-
-  function clearSession() {
-    localStorage.removeItem('session_token');
-    localStorage.removeItem('user_profile');
+  } catch {
+    localStorage.clear();
+    location.replace(CONFIG.LOGIN_PAGE);
   }
 })();
-</script>
