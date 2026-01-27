@@ -1,66 +1,34 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Login | IT Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- THEME -->
-  <link rel="stylesheet" href="./css/style.css">
-
-  <!-- ICON (emoji-based ไม่พัง ไม่หาย) -->
-  <style>
-    .card-title{
-      text-align:center;
-      margin-bottom:18px;
-      color:#ff0080;
-      font-size:20px;
-      font-weight:600;
-    }
-    .icon-input{
-      position:relative;
-    }
-    .icon-input .input-icon{
-      position:absolute;
-      left:14px;
-      top:50%;
-      transform:translateY(-50%);
-      font-size:18px;
-      opacity:.8;
-    }
-    .icon-input input{
-      padding-left:44px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Login | IT Maintenance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
 <div class="login-wrapper">
 
-  <!-- HEADER -->
   <div class="login-header">
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
-        <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
-        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
+        <h2>เข้าสู่ระบบ</h2>
+        <span>ระบบแจ้งซ่อมบำรุง IT</span>
       </div>
     </div>
   </div>
 
-  <!-- CARD -->
   <div class="login-card">
 
-    <h3 class="card-title">🔐 เข้าสู่ระบบ</h3>
-
-    <div class="form-group icon-input">
-      <span class="input-icon">📧</span>
+    <div class="form-group row-input">
+      <span class="row-icon">📧</span>
       <input id="email" placeholder="Email">
     </div>
 
-    <div class="form-group icon-input">
-      <span class="input-icon">🔑</span>
+    <div class="form-group row-input">
+      <span class="row-icon">🔑</span>
       <input id="password" type="password" placeholder="Password">
     </div>
 
@@ -68,72 +36,28 @@
 
     <div class="register-link">
       ✍️ <a href="register.html">ลงทะเบียน</a> |
-      🔄 <a href="reset-password.html">ขอรหัสใหม่</a>
+      🔄 <a href="forgot-password.html">ขอรหัสผ่านใหม่</a>
     </div>
-  </div>
 
-</div>
-
-<!-- OVERLAY -->
-<div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังตรวจสอบ...</p>
-  </div>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup hidden">
-  <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
-    <p id="popupMsg"></p>
-    <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
 <script src="./js/api.js"></script>
-<script src="./js/ui.js"></script>
-
 <script>
-/* =============================
-   SESSION CHECK
-   ============================= */
-(function(){
-  const s = sessionStorage.getItem('user');
-  if(s){
-    location.href = "index.html";
-  }
-})();
-
-/* =============================
-   LOGIN
-   ============================= */
 function login(){
-
   if(!email.value || !password.value){
-    showPopup("แจ้งเตือน","กรุณากรอก Email และ Password");
+    alert("กรุณากรอกข้อมูลให้ครบ");
     return;
   }
-
-  showOverlay();
-
   callAPI('login',{
-    email: email.value,
-    password: password.value   // 🔐 backend จะ hash ตรวจเอง
-  })
-  .then(res=>{
-    hideOverlay();
-
+    email:email.value,
+    password:password.value
+  }).then(res=>{
     if(res.ok){
-      sessionStorage.setItem('user', JSON.stringify(res.user));
-      location.href = "index.html";
+      location.href="index.html";
     }else{
-      showPopup("ผิดพลาด", res.message);
+      alert(res.message);
     }
-  })
-  .catch(()=>{
-    hideOverlay();
-    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
   });
 }
 </script>
