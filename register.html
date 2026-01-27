@@ -4,50 +4,46 @@
   <meta charset="UTF-8">
   <title>Register | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- THEME -->
-  <link rel="stylesheet" href="./css/theme.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
-<div class="auth-wrapper">
+<div class="login-wrapper">
 
   <!-- HEADER -->
-  <div class="auth-header">
+  <div class="login-header">
     <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="logo">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>โรงพยาบาลอุดรธานี</h2>
-        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
-        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
+        <span>ระบบบริหารงานซ่อมบำรุง</span>
       </div>
     </div>
   </div>
 
   <!-- CARD -->
-  <div class="auth-card">
-
-    <h3 class="card-title">📝 ลงทะเบียนผู้ใช้งาน</h3>
+  <div class="login-card">
 
     <div class="form-group">
-      <span class="input-icon">👤</span>
-      <input id="name" placeholder="ชื่อ - นามสกุล">
+      <input id="name" placeholder="ชื่อ">
     </div>
 
     <div class="form-group">
-      <span class="input-icon">📧</span>
+      <input id="surname" placeholder="นามสกุล">
+    </div>
+
+    <div class="form-group">
       <input id="email" placeholder="Email">
     </div>
 
     <div class="form-group">
-      <span class="input-icon">🔑</span>
       <input id="password" type="password" placeholder="Password">
     </div>
 
-    <button class="btn" onclick="register()">🚀 ลงทะเบียน</button>
+    <button class="btn-login" onclick="register()">ลงทะเบียน</button>
 
-    <div class="auth-link">
-      🔐 <a href="login.html">เข้าสู่ระบบ</a>
+    <div class="register-link">
+      มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
     </div>
 
   </div>
@@ -55,7 +51,7 @@
 
 <!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
-  <div class="popup-card">
+  <div class="overlay-card">
     <div class="spinner"></div>
     <p>กำลังบันทึกข้อมูล...</p>
   </div>
@@ -64,44 +60,65 @@
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <h3 id="popupTitle"></h3>
     <p id="popupMsg"></p>
-    <br>
-    <button class="btn" onclick="closePopup()">ตกลง</button>
+    <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
+
 <script>
-/* =============================
-   UI CORE
-   ============================= */
-function showOverlay(){ overlay.classList.remove('hidden'); }
-function hideOverlay(){ overlay.classList.add('hidden'); }
-function showPopup(t,m){
-  popupTitle.innerText=t;
-  popupMsg.innerText=m;
-  popup.classList.remove('hidden');
+// ---------- HASH PASSWORD ----------
+async function hashPassword(text){
+  const enc = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(hash))
+    .map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-function closePopup(){ popup.classList.add('hidden'); }
 
-/* =============================
-   REGISTER FLOW
-   ============================= */
-function register(){
+// ---------- REGISTER ----------
+async function register(){
 
-  if(!name.value || !email.value || !password.value){
+  if(!name.value || !surname.value || !email.value || !password.value){
     showPopup("แจ้งเตือน","กรุณากรอกข้อมูลให้ครบ");
     return;
   }
 
   showOverlay();
 
-  // 🔧 mock flow (แทน backend)
-  setTimeout(()=>{
+  const hashed = await hashPassword(password.value);
+
+  callAPI('register',{
+    name: name.value,
+    surname: surname.value,
+    email: email.value,
+    password: hashed
+  })
+  .then(res=>{
     hideOverlay();
-    showPopup("สำเร็จ","ลงทะเบียนเรียบร้อย กรุณายืนยันตัวตน");
-    setTimeout(()=>location.href="verify.html",1200);
-  },1200);
+
+    if(res.ok){
+      // LOG (ไม่บังคับ backend จะรับหรือไม่)
+      callAPI('log',{
+        action:'REGISTER',
+        email: email.value
+      });
+
+      showPopup("สำเร็จ","ลงทะเบียนแล้ว กรุณายืนยันตัวตนจากอีเมล");
+      setTimeout(()=>{
+        sessionStorage.setItem('verify_email', email.value);
+        location.href="verify.html";
+      },1200);
+    }else{
+      showPopup("ผิดพลาด", res.message);
+    }
+  })
+  .catch(()=>{
+    hideOverlay();
+    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
+  });
 }
 </script>
 
