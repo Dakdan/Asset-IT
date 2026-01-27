@@ -1,45 +1,38 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>IT-sevice</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
 </head>
 <body>
 
-<script src="./js/session-guard.js"></script>
+<script>
+if(!localStorage.getItem("it_session")){
+  location.href="login.html";
+}
+</script>
 
 <div class="login-wrapper">
-
   <div class="login-header">
-    <div class="header-logo">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
-    </div>
-    <h2>โรงพยาบาลอุดรธานี</h2>
-    <p>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+    <h2>📊 Dashboard</h2>
   </div>
 
   <div class="login-card">
-    <h3>🎉 เข้าสู่ระบบแล้ว</h3>
-    <p id="userEmail"></p>
-
+    <p id="userName"></p>
     <button class="btn-login" onclick="logout()">ออกจากระบบ</button>
   </div>
 </div>
 
 <script>
-const session = JSON.parse(localStorage.getItem('it_session'));
-if (session) {
-  userEmail.innerText = session.email;
-}
-
-function logout() {
-  localStorage.removeItem('it_session');
-  location.href = 'login.html';
+const u=JSON.parse(localStorage.getItem("it_session"));
+if(u) userName.innerText="ยินดีต้อนรับ "+u.name;
+function logout(){
+  localStorage.removeItem("it_session");
+  location.href="login.html";
 }
 </script>
-
 </body>
 </html>
