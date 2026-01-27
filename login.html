@@ -11,6 +11,22 @@
   box-sizing:border-box;
   font-family:'Kanit',sans-serif;
 }
+    :root { --pink-main: #ff1493; --pink-light: #ff85a2; --pink-bg: #fff0f5; }
+    body { background: linear-gradient(180deg, var(--pink-light) 0%,#ff85a2 5%, var(--pink-bg) 100%); min-height: 100vh; font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
+    .header-banner { background: linear-gradient(180deg, #003 0%,#ff1493 30%); border: 2px solid #003; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .main-card { background: white; border: 2px solid #003; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .input-style { border: 2px solid #ff00ff; border-radius: 15px; padding: 12px 15px; width: 100%; outline: none; }
+    .btn-submit { background-color: #ff1493; color: white; border: 2px solid #00ff00; border-radius: 15px; font-weight: bold; }
+    .btn-submit:active { transform: scale(0.95); }
+    
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #000; display: flex; justify-content: space-around; padding: 10px 0; z-index: 40; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; cursor: pointer; }
+    .nav-item.active { color: #ff2d92; font-weight: bold; }
+    .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
+
+    /* Overlay สไตล์ใหม่ที่เพิ่มเข้าไป */
+    .search-overlay { position: fixed; inset: 0; background: var(--pink-bg); z-index: 100; display: none; padding: 20px; overflow-y: auto; }
+    .asset-card-new { background: white; border: 2px solid #000; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; }
 
 body{
   margin:0;
@@ -135,6 +151,14 @@ button:hover{
 <div class="wrapper">
 
   <div class="header">
+    <div class="max-w-md mx-auto px-2 pt-1">    
+    <div class="header-banner p-2 mb-2 flex items-center gap-1 text-white">
+      <div class="bg-white p-1 rounded-xl"><img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" alt="Logo" class="w-12 h-12 object-contain"></div>
+      <div>
+        <h1 class="text-center text-lg font-bold ">โรงพยาบาลอุดรธานี</h1>
+        <p class="text-center text-[10px] opacity-90">ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+      </div>
+    </div>
     <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
     <div class="logo-text">
       <h2>โรงพยาบาลอุดรธานี</h2>
