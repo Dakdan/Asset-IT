@@ -1,49 +1,33 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>ยืนยันตัวตน | IT Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/ui.css">
+<meta charset="UTF-8">
+<title>Verify</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/ui.css">
 </head>
 <body>
 
 <div class="login-wrapper">
-
   <div class="login-header">
-    <div class="header-logo">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
-    </div>
-    <h2>โรงพยาบาลอุดรธานี</h2>
-    <p>ยืนยันตัวตนผู้ใช้งาน</p>
+    <h2>🔐 ยืนยันตัวตน</h2>
   </div>
 
   <div class="login-card">
-    <h3>📧 ยืนยันรหัส</h3>
-
-    <div class="form-group">
-      <input id="email" placeholder="Email">
-    </div>
-
-    <div class="form-group">
-      <input id="code" placeholder="Verification Code">
-    </div>
-
+    <input id="email" placeholder="Email">
+    <input id="code" placeholder="Verification Code">
     <button class="btn-login" onclick="verify()">ยืนยัน</button>
   </div>
 </div>
 
 <div id="overlay" class="overlay hidden">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <p>กำลังตรวจสอบ...</p>
-  </div>
+  <div class="overlay-card"><div class="spinner"></div></div>
 </div>
 
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
+    <h3>แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
@@ -51,27 +35,21 @@
 
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
-
 <script>
-const params = new URLSearchParams(location.search);
-email.value = params.get('email') || '';
-
-function verify() {
+function verify(){
   showOverlay();
-  callAPI('verify', {
-    email: email.value,
-    code: code.value
-  }).then(res => {
+  callAPI('verify',{
+    email:email.value,
+    code:code.value
+  }).then(r=>{
     hideOverlay();
-    if (res.ok) {
-      showPopup('สำเร็จ', 'ยืนยันเรียบร้อย');
-      setTimeout(()=>location.href='login.html',1500);
-    } else {
-      showPopup('ผิดพลาด', res.message);
+    if(r.success){
+      location.href="login.html";
+    }else{
+      showPopup("ผิดพลาด",r.message);
     }
   });
 }
 </script>
-
 </body>
 </html>
