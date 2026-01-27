@@ -1,0 +1,200 @@
+/* =============================
+   THEME CORE
+   ============================= */
+:root{
+  --primary:#ff0080;
+  --primary-dark:#e60073;
+  --border:#ffc1dc;
+  --bg:#fce4ec;
+  --success:#2ecc71;
+  --error:#e74c3c;
+  --text:#444;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Kanit',sans-serif;
+}
+
+body{
+  background:var(--bg);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:var(--text);
+}
+
+/* =============================
+   LAYOUT
+   ============================= */
+.auth-wrapper{
+  width:100%;
+  max-width:420px;
+  padding:15px;
+}
+
+.auth-header{
+  background:linear-gradient(135deg,#b1005d,var(--primary));
+  padding:20px;
+  border-radius:20px 20px 0 0;
+}
+
+.logo-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:64px;
+  height:64px;
+  background:#fff;
+  border-radius:50%;
+  padding:5px;
+}
+
+.logo-text h2{
+  font-size:18px;
+  color:#fff;
+}
+
+.logo-text span{
+  display:block;
+  font-size:13px;
+  color:#ffe3f0;
+}
+
+/* =============================
+   CARD
+   ============================= */
+.auth-card{
+  background:#fff;
+  padding:26px;
+  border-radius:0 0 20px 20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.card-title{
+  text-align:center;
+  margin-bottom:18px;
+  font-size:18px;
+}
+
+/* =============================
+   FORM
+   ============================= */
+.form-group{
+  margin-bottom:14px;
+  position:relative;
+}
+
+input{
+  width:100%;
+  padding:12px 14px 12px 42px;
+  border-radius:14px;
+  border:2px solid var(--border);
+  font-size:15px;
+  outline:none;
+  transition:.2s;
+}
+
+input:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(255,0,128,.15);
+}
+
+.input-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:18px;
+}
+
+/* states */
+.input-success{ border-color:var(--success); }
+.input-error{ border-color:var(--error); }
+
+/* =============================
+   BUTTON
+   ============================= */
+.btn{
+  width:100%;
+  padding:14px;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn:hover{
+  background:var(--primary-dark);
+}
+
+/* =============================
+   LINKS
+   ============================= */
+.auth-link{
+  text-align:center;
+  margin-top:14px;
+  font-size:14px;
+}
+
+.auth-link a{
+  color:var(--primary);
+  text-decoration:none;
+}
+
+/* =============================
+   OVERLAY / POPUP
+   ============================= */
+.overlay,
+.popup{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.overlay{
+  background:rgba(255,255,255,.8);
+  z-index:1000;
+}
+
+.popup{
+  background:rgba(0,0,0,.45);
+  z-index:1100;
+}
+
+.hidden{ display:none; }
+
+.popup-card{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  text-align:center;
+}
+
+/* =============================
+   SPINNER
+   ============================= */
+.spinner{
+  width:40px;
+  height:40px;
+  border:5px solid #eee;
+  border-top:5px solid var(--primary);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 10px;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
