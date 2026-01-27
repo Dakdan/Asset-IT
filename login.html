@@ -1,56 +1,63 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Login | IT Maintenance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
+  <meta charset="UTF-8">
+  <title>เข้าสู่ระบบ | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
 </head>
 <body>
 
 <div class="login-wrapper">
 
   <div class="login-header">
-    <div class="logo-box">
-      <div class="logo-icon">🛠️</div>
-      <div class="logo-text">
-        <h2>IT Maintenance</h2>
-        <span>ระบบแจ้งซ่อมบำรุง</span>
-      </div>
+    <div class="header-logo">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" alt="logo">
     </div>
+    <h2>โรงพยาบาลอุดรธานี</h2>
+    <p>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
   </div>
 
   <div class="login-card">
-    <h3>เข้าสู่ระบบ</h3>
-    <input id="user" placeholder="ชื่อผู้ใช้">
-    <input id="pass" type="password" placeholder="รหัสผ่าน">
-    <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
+    <h3>🔐 เข้าสู่ระบบ</h3>
 
-    <div class="btn-link">
-      <a href="register.html">สมัครใช้งาน</a>
+    <div class="form-group">
+      <input id="email" placeholder="Username">
+    </div>
+
+    <div class="form-group">
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn-login" onclick="login()">🛡️ Login</button>
+
+    <div class="register-link">
+      ยังไม่มีบัญชี? <a href="register.html">ลงทะเบียน</a>
     </div>
   </div>
-
 </div>
 
-<!-- overlay + popup -->
+<!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <p>กำลังโหลด...</p>
+    <p>กำลังเข้าสู่ระบบ...</p>
   </div>
 </div>
 
+<!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
+    <h3 id="popupTitle">แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
+<script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
-<script src="./js/auth.js"></script>
+<script src="./js/main.js"></script>
+
 </body>
 </html>
