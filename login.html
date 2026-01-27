@@ -1,307 +1,142 @@
- <style>
-    :root { --pink-main: #ff1493; --pink-light: #ff85a2; --pink-bg: #fff0f5; }
-    body { background: linear-gradient(180deg, var(--pink-light) 0%,#ff85a2 5%, var(--pink-bg) 100%); min-height: 100vh; font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
-    .header-banner { background: linear-gradient(180deg, #003 0%,#ff1493 30%); border: 2px solid #003; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .main-card { background: white; border: 2px solid #003; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-    .input-style { border: 2px solid #ff00ff; border-radius: 15px; padding: 12px 15px; width: 100%; outline: none; }
-    .btn-submit { background-color: #ff1493; color: white; border: 2px solid #00ff00; border-radius: 15px; font-weight: bold; }
-    .btn-submit:active { transform: scale(0.95); }
-    
-    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #000; display: flex; justify-content: space-around; padding: 10px 0; z-index: 40; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; cursor: pointer; }
-    .nav-item.active { color: #ff2d92; font-weight: bold; }
-    .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
-
-    /* Overlay สไตล์ใหม่ที่เพิ่มเข้าไป */
-    .search-overlay { position: fixed; inset: 0; background: var(--pink-bg); z-index: 100; display: none; padding: 20px; overflow-y: auto; }
-    .asset-card-new { background: white; border: 2px solid #000; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; }
-  </style>
-</head>
-<body> 
-  <div class="max-w-md mx-auto px-2 pt-1">    
-    <div class="header-banner p-2 mb-2 flex items-center gap-1 text-white">
-      <div class="bg-white p-1 rounded-xl"><img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" alt="Logo" class="w-12 h-12 object-contain"></div>
-      <div>
-        <h1 class="text-center text-lg font-bold ">โรงพยาบาลอุดรธานี</h1>
-        <p class="text-center text-[10px] opacity-90">ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
-      </div>
-    </div>
-
-    <div id="login-view" class="main-card p-8">
-      <div class="flex items-center gap-1 mb-6 text-[#ff2d92]"><span class="text-2xl">🔐</span> <h2 class="text-xl font-bold">เข้าสู่ระบบ</h2></div>
-      <div class="space-y-4">
-        <input type="text" id="user" placeholder="Username" class="input-style">
-        <input type="password" id="pass" placeholder="Password" class="input-style">
-        <button onclick="handleLogin()" class="w-full btn-submit py-4">🛡️ Login</button>
-        <p class="text-center text-sm">ยังไม่มีบัญชี? <a href="#" onclick="showRegister()" class="text-pink-600 underline">ลงทะเบียน</a></p>
-      </div>
-    </div>
-
-    <div id="register-view" class="main-card p-8 hidden">
-      <h2 class="text-center font-bold text-xl mb-6 text-[#ff33ff]">📋 ลงทะเบียน</h2>
-      <div class="space-y-3">
-        <input type="text" id="reg-name" placeholder="ชื่อ" class="input-style">
-        <input type="text" id="reg-surname" placeholder="นามสกุล" class="input-style">
-        <input type="email" id="reg-email" placeholder="Email" class="input-style">
-        <input type="text" id="reg-user" placeholder="ตั้ง Username" class="input-style">
-        <input type="password" id="reg-pass" placeholder="ตั้ง Password" class="input-style">
-        <select id="reg-dept" class="input-style" onchange="updateDeptID()"></select>
-        <input type="hidden" id="hidden-dept-id">
-        <button onclick="handleRegister()" class="w-full btn-submit py-4">💾 บันทึก</button>
-        <button onclick="showLogin()" class="w-full py-2 text-sm">ย้อนกลับ</button>
-      </div>
-    </div>
-
-    <div id="main-view" class="hidden">
-      <div id="tab-dashboard" class="tab-content space-y-4">
-        <div class="main-card p-4">
-          <p id="display-name" class="font-bold text-[#ff2d92]"></p>
-          <p id="display-dept" class="text-[12px] text-gray-500"></p>
-        </div>
-        <div class="main-card overflow-hidden" style="height: 350px;">
-          <iframe width="100%" height="100%" src="https://lookerstudio.google.com/embed/reporting/YOUR_REPORT_ID" frameborder="0" style="border:0" allowfullscreen></iframe>
-        </div>
-      </div>
-
-      <div id="tab-assets" class="tab-content hidden space-y-4">
-        <div class="main-card p-4">
-          <p id="display-name" class="font-bold text-[#ff2d92]"></p>
-          <p id="display-dept" class="text-[12px] text-gray-500"></p>
-        </div>
-      </div>
-
-      <div id="tab-services" class="tab-content hidden space-y-4 text-center">
-        <div class="main-card p-6">
-          <h3 class="font-bold text-lg mb-6">Action Center</h3>
-          <div class="space-y-4">
-            <button onclick="openSearchOverlay()" class="w-full btn-submit py-5 bg-blue-500 border-none text-lg flex justify-center items-center gap-2">🛠️ ติดตามงานซ่อม</button>
-            <button onclick="window.open('YOUR_APPSHEET_REPORT_URL')" class="w-full btn-submit py-5 bg-purple-500 border-none text-lg flex justify-center items-center gap-2">📄 พิมพ์รายงานสรุป</button>
-            <button onclick="Swal.fire('บริการ','เร็วๆ นี้','info')" class="w-full btn-submit py-5 bg-orange-500 border-none text-lg flex justify-center items-center gap-2">💰 รับบริการ</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('dashboard', this)"><span>📊 Dash</span></div>
-        <div class="nav-item" onclick="switchTab('assets', this)"><span>📦 Asset</span></div>
-        <div class="nav-item" onclick="switchTab('services', this)"><span>🛠️ Service</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="search-overlay" class="search-overlay">
-    <div class="max-w-md mx-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#ff1493]">🔍 ติดตามงานซ่อม</h2>
-        <button onclick="closeSearchOverlay()" class="text-4xl text-gray-400">&times;</button>
-      </div>
-      <div class="main-card p-4 flex gap-2 mb-4 border-pink-400">
-        <input type="text" id="overlayInput" placeholder="กรอกเลขท้าย..." class="input-style !py-2">
-        <button onclick="doOverlaySearch()" class="bg-[#ff1493] text-white px-6 rounded-xl font-bold">ค้นหา</button>
-      </div>
-      <div id="overlay-results" class="space-y-3"></div>
-    </div>
-  </div>
-
-  <div id="modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-[110]">
-    <div class="main-card w-full max-w-sm p-6 relative">
-      <h3 class="font-bold text-lg mb-4 text-[#ff2d92] border-b pb-2">📋 รายละเอียด</h3>
-      <div id="modal-body" class="text-sm space-y-2 mb-6"></div>
-      <div class="space-y-3">
-        <button onclick="confirmSave()" class="w-full btn-submit py-4 bg-green-500 border-none">✔ ยืนยันการใช้งาน</button>
-        <button onclick="window.open('YOUR_APPSHEET_REPAIR_URL?defaults={&quot;AssetID&quot;:&quot;'+currentAsset.AssetID+'&quot;}')" class="w-full btn-submit py-4 bg-blue-400 border-none">แจ้งซ่อมครุภัณฑ์นี้</button>
-        <button onclick="closeModal()" class="w-full py-2 text-gray-400">ยกเลิก</button>
-      </div>
-    </div>
-  </div><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Login</title>
+  <meta charset="UTF-8">
+  <title>Login | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- THEME -->
+  <link rel="stylesheet" href="./css/style.css">
 
-<style>
-*{
-  box-sizing:border-box;
-  font-family:'Kanit',sans-serif;
-}
-    :root { --pink-main: #ff1493; --pink-light: #ff85a2; --pink-bg: #fff0f5; }
-    body { background: linear-gradient(180deg, var(--pink-light) 0%,#ff85a2 5%, var(--pink-bg) 100%); min-height: 100vh; font-family: 'Kanit', sans-serif; padding-bottom: 40px; }
-    .header-banner { background: linear-gradient(180deg, #003 0%,#ff1493 30%); border: 2px solid #003; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .main-card { background: white; border: 2px solid #003; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-    .input-style { border: 2px solid #ff00ff; border-radius: 15px; padding: 12px 15px; width: 100%; outline: none; }
-    .btn-submit { background-color: #ff1493; color: white; border: 2px solid #00ff00; border-radius: 15px; font-weight: bold; }
-    .btn-submit:active { transform: scale(0.95); }
-    
-    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #000; display: flex; justify-content: space-around; padding: 10px 0; z-index: 40; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; cursor: pointer; }
-    .nav-item.active { color: #ff2d92; font-weight: bold; }
-    .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
-
-    /* Overlay สไตล์ใหม่ที่เพิ่มเข้าไป */
-    .search-overlay { position: fixed; inset: 0; background: var(--pink-bg); z-index: 100; display: none; padding: 20px; overflow-y: auto; }
-    .asset-card-new { background: white; border: 2px solid #000; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; }
-
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(135deg,#f7f2e8,#f9c5d1);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* กล่องหลัก */
-.wrapper{
-  width:100%;
-  max-width:420px;
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 18px 40px rgba(0,0,0,.25);
-  overflow:hidden;
-}
-
-/* Header */
-.header{
-  background:#0b4d8a;
-  padding:18px 20px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  color:#fff;
-}
-
-.header img{
-  width:54px;
-  height:54px;
-  border-radius:6px;
-  background:#fff;
-  padding:4px;
-}
-
-.logo-text h2{
-  margin:0;
-  font-size:18px;
-  font-weight:600;
-}
-
-.logo-text span{
-  display:block;
-  font-size:12px;
-  line-height:1.4;
-  opacity:.9;
-}
-
-/* ฟอร์ม */
-.form{
-  padding:26px;
-}
-
-.field{
-  position:relative;
-  margin-bottom:16px;
-}
-
-.field i{
-  position:absolute;
-  left:14px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#0b4d8a;
-  font-size:14px;
-}
-
-.field input{
-  width:100%;
-  padding:12px 14px 12px 40px;
-  border-radius:10px;
-  border:1px solid #dcdcdc;
-  font-size:14px;
-  outline:none;
-}
-
-.field input:focus{
-  border-color:#0b4d8a;
-}
-
-/* ปุ่ม */
-button{
-  width:100%;
-  padding:12px;
-  margin-top:8px;
-  border:none;
-  border-radius:10px;
-  background:#0b4d8a;
-  color:#fff;
-  font-size:15px;
-  font-weight:500;
-  cursor:pointer;
-}
-
-button:hover{
-  background:#083d6e;
-}
-
-/* ลิงก์ */
-.links{
-  text-align:center;
-  margin-top:14px;
-  font-size:13px;
-}
-
-.links a{
-  color:#0b4d8a;
-  text-decoration:none;
-}
-
-.links a:hover{
-  text-decoration:underline;
-}
-</style>
+  <!-- ICON (emoji-based ไม่พัง ไม่หาย) -->
+  <style>
+    .card-title{
+      text-align:center;
+      margin-bottom:18px;
+      color:#ff0080;
+      font-size:20px;
+      font-weight:600;
+    }
+    .icon-input{
+      position:relative;
+    }
+    .icon-input .input-icon{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+      opacity:.8;
+    }
+    .icon-input input{
+      padding-left:44px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="wrapper">
+<div class="login-wrapper">
 
-  <div class="header">
-    <div class="max-w-md mx-auto px-2 pt-1">    
-    <div class="header-banner p-2 mb-2 flex items-center gap-1 text-white">
-      <div class="bg-white p-1 rounded-xl"><img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" alt="Logo" class="w-12 h-12 object-contain"></div>
-      <div>
-        <h1 class="text-center text-lg font-bold ">โรงพยาบาลอุดรธานี</h1>
-        <p class="text-center text-[10px] opacity-90">ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์และบริการ</p>
+  <!-- HEADER -->
+  <div class="login-header">
+    <div class="logo-box">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
+      <div class="logo-text">
+        <h2>โรงพยาบาลอุดรธานี</h2>
+        <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
+        <span>หน่วยงาน: เทคโนโลยีสารสนเทศคอมพิวเตอร์</span>
       </div>
-    </div>
-    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png">
-    <div class="logo-text">
-      <h2>โรงพยาบาลอุดรธานี</h2>
-      <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
-      <span>หน่วยงาน: เทคโนโลยีสารสนเทศ</span>
     </div>
   </div>
 
-  <div class="form">
-    <div class="field">
-      <i class="fa fa-user"></i>
-      <input type="text" placeholder="Username">
+  <!-- CARD -->
+  <div class="login-card">
+
+    <h3 class="card-title">🔐 เข้าสู่ระบบ</h3>
+
+    <div class="form-group icon-input">
+      <span class="input-icon">📧</span>
+      <input id="email" placeholder="Email">
     </div>
 
-    <div class="field">
-      <i class="fa fa-lock"></i>
-      <input type="password" placeholder="Password">
+    <div class="form-group icon-input">
+      <span class="input-icon">🔑</span>
+      <input id="password" type="password" placeholder="Password">
     </div>
 
-    <button>เข้าสู่ระบบ</button>
+    <button class="btn-login" onclick="login()">🚀 เข้าสู่ระบบ</button>
 
-    <div class="links">
-      <a href="register.html">สมัครสมาชิก</a> |
-      <a href="forgot.html">ลืมรหัสผ่าน</a>
+    <div class="register-link">
+      ✍️ <a href="register.html">ลงทะเบียน</a> |
+      🔄 <a href="reset-password.html">ขอรหัสใหม่</a>
     </div>
   </div>
 
 </div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <p>กำลังตรวจสอบ...</p>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-card">
+    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <p id="popupMsg"></p>
+    <button class="btn-login" onclick="closePopup()">ตกลง</button>
+  </div>
+</div>
+
+<script src="./js/api.js"></script>
+<script src="./js/ui.js"></script>
+
+<script>
+/* =============================
+   SESSION CHECK
+   ============================= */
+(function(){
+  const s = sessionStorage.getItem('user');
+  if(s){
+    location.href = "index.html";
+  }
+})();
+
+/* =============================
+   LOGIN
+   ============================= */
+function login(){
+
+  if(!email.value || !password.value){
+    showPopup("แจ้งเตือน","กรุณากรอก Email และ Password");
+    return;
+  }
+
+  showOverlay();
+
+  callAPI('login',{
+    email: email.value,
+    password: password.value   // 🔐 backend จะ hash ตรวจเอง
+  })
+  .then(res=>{
+    hideOverlay();
+
+    if(res.ok){
+      sessionStorage.setItem('user', JSON.stringify(res.user));
+      location.href = "index.html";
+    }else{
+      showPopup("ผิดพลาด", res.message);
+    }
+  })
+  .catch(()=>{
+    hideOverlay();
+    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
+  });
+}
+</script>
 
 </body>
 </html>
