@@ -4,50 +4,96 @@
   <meta charset="UTF-8">
   <title>Verify | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- THEME -->
   <link rel="stylesheet" href="./css/style.css">
+
+  <!-- ICON STYLE -->
+  <style>
+    .card-title{
+      text-align:center;
+      margin-bottom:18px;
+      color:#ff0080;
+      font-size:20px;
+      font-weight:600;
+    }
+    .icon-input{
+      position:relative;
+    }
+    .icon-input .input-icon{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+      opacity:.8;
+    }
+    .icon-input input{
+      padding-left:44px;
+      text-align:center;
+      letter-spacing:2px;
+      font-size:18px;
+    }
+    .resend{
+      text-align:center;
+      margin-top:12px;
+      font-size:14px;
+    }
+    .resend a{
+      color:#ff0080;
+      text-decoration:none;
+      font-weight:500;
+      cursor:pointer;
+    }
+  </style>
 </head>
 <body>
 
 <div class="login-wrapper">
 
+  <!-- HEADER -->
   <div class="login-header">
     <div class="logo-box">
       <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>ยืนยันตัวตน</h2>
-        <span>กรอกรหัสจากอีเมล</span>
+        <span>กรอกรหัสยืนยันจากอีเมล</span>
       </div>
     </div>
   </div>
 
+  <!-- CARD -->
   <div class="login-card">
 
-    <div class="form-group">
+    <h3 class="card-title">🔐 ยืนยันบัญชีผู้ใช้</h3>
+
+    <div class="form-group icon-input">
+      <span class="input-icon">🔢</span>
       <input id="code" placeholder="Verification Code">
     </div>
 
-    <button class="btn-login" onclick="verify()">ยืนยัน</button>
+    <button class="btn-login" onclick="verify()">✅ ยืนยันตัวตน</button>
 
-    <div class="register-link">
-      ไม่ได้รับรหัส?
-      <a href="#" onclick="resendCode()">ขอรหัสใหม่</a>
+    <div class="resend">
+      🔄 <a onclick="resend()">ขอรหัสยืนยันใหม่</a>
     </div>
 
   </div>
+
 </div>
 
 <!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
-    <p>กำลังดำเนินการ...</p>
+    <p>กำลังตรวจสอบข้อมูล...</p>
   </div>
 </div>
 
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle"></h3>
+    <h3 id="popupTitle">แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
@@ -57,9 +103,9 @@
 <script src="./js/ui.js"></script>
 
 <script>
-const email = sessionStorage.getItem('verify_email');
-
-// ---------- VERIFY ----------
+/* =============================
+   VERIFY
+   ============================= */
 function verify(){
 
   if(!code.value){
@@ -70,44 +116,38 @@ function verify(){
   showOverlay();
 
   callAPI('verify',{
-    email: email,
     code: code.value
   })
   .then(res=>{
     hideOverlay();
 
     if(res.ok){
-      callAPI('log',{ action:'VERIFY', email });
       showPopup("สำเร็จ","ยืนยันตัวตนเรียบร้อย");
-      setTimeout(()=>location.href="login.html",1200);
+      setTimeout(()=>{
+        location.href = "login.html";
+      },1200);
     }else{
       showPopup("ผิดพลาด", res.message);
     }
   })
   .catch(()=>{
     hideOverlay();
-    showPopup("ผิดพลาด","ระบบขัดข้อง");
+    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
   });
 }
 
-// ---------- RESEND CODE ----------
-function resendCode(){
-
-  if(!email){
-    showPopup("ผิดพลาด","ไม่พบข้อมูลอีเมล");
-    return;
-  }
+/* =============================
+   RESEND CODE
+   ============================= */
+function resend(){
 
   showOverlay();
 
-  callAPI('resend_verify',{
-    email: email
-  })
+  callAPI('resendVerify',{})
   .then(res=>{
     hideOverlay();
     if(res.ok){
-      callAPI('log',{ action:'RESEND_CODE', email });
-      showPopup("สำเร็จ","ส่งรหัสใหม่แล้ว");
+      showPopup("สำเร็จ","ส่งรหัสยืนยันใหม่เรียบร้อย");
     }else{
       showPopup("ผิดพลาด",res.message);
     }
