@@ -1,39 +1,49 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Login | IT Maintenance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/ui.css">
-  <div class="login-header">
-  <div class="logo-box">
-    <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
-    <div class="logo-text">
-      <h2>โรงพยาบาลอุดรธานี</h2>
-      <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
-    </div>
-  </div>
-</div>
+  <meta charset="UTF-8">
+  <title>Login | IT Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/ui.css">
 </head>
+
 <body>
 
+<div class="login-wrapper">
 
+  <!-- HEADER -->
+  <div class="login-header">
+    <div class="logo-box">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
+      <div class="logo-text">
+        <h2>โรงพยาบาลอุดรธานี</h2>
+        <span>ระบบบริหารจัดการครุภัณฑ์คอมพิวเตอร์</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD -->
   <div class="login-card">
     <div class="form-group">
-      <input id="user" placeholder="Username">
+      <input id="email" placeholder="Email">
     </div>
+
     <div class="form-group">
-      <input id="pass" type="password" placeholder="Password">
+      <input id="password" type="password" placeholder="Password">
     </div>
 
     <button class="btn-login" onclick="login()">Login</button>
+
     <div class="register-link">
-      <a href="register.html">ลงทะเบียน</a>
+      ยังไม่มีบัญชี? <a href="register.html">ลงทะเบียน</a>
     </div>
   </div>
+
 </div>
 
+<!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="spinner"></div>
@@ -41,9 +51,10 @@
   </div>
 </div>
 
+<!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3>แจ้งเตือน</h3>
+    <h3 id="popupTitle">แจ้งเตือน</h3>
     <p id="popupMsg"></p>
     <button onclick="closePopup()">ตกลง</button>
   </div>
@@ -51,22 +62,29 @@
 
 <script src="./js/api.js"></script>
 <script src="./js/ui.js"></script>
+
 <script>
 function login(){
   showOverlay();
+
   callAPI('login',{
-    user:user.value,
-    pass:pass.value
-  }).then(r=>{
+    email: email.value,
+    password: password.value
+  }).then(res=>{
     hideOverlay();
-    if(r.success){
-      localStorage.setItem("it_session",JSON.stringify(r.user));
-      location.href="index.html";
+
+    if(res.ok){
+      localStorage.setItem("it_session", JSON.stringify({
+        token: res.data.token,
+        role: res.data.role
+      }));
+      location.href = "index.html";
     }else{
-      showPopup("ผิดพลาด",r.message);
+      showPopup("ผิดพลาด", res.message);
     }
   });
 }
 </script>
+
 </body>
 </html>
