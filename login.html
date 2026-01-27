@@ -4,18 +4,16 @@
   <meta charset="UTF-8">
   <title>Login | IT Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- THEME -->
-  <link rel="stylesheet" href="./css/theme.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
-<div class="auth-wrapper">
+<div class="login-wrapper">
 
   <!-- HEADER -->
-  <div class="auth-header">
+  <div class="login-header">
     <div class="logo-box">
-      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="logo">
+      <img src="https://img2.pic.in.th/-227e4f6f84f29f020.png" class="header-logo">
       <div class="logo-text">
         <h2>โรงพยาบาลอุดรธานี</h2>
         <span>ระบบบริหารงานซ่อมบำรุงและบริการ</span>
@@ -25,25 +23,21 @@
   </div>
 
   <!-- CARD -->
-  <div class="auth-card">
-
-    <h3 class="card-title">🔐 เข้าสู่ระบบ</h3>
+  <div class="login-card">
 
     <div class="form-group">
-      <span class="input-icon">📧</span>
       <input id="email" placeholder="Email">
     </div>
 
     <div class="form-group">
-      <span class="input-icon">🔑</span>
       <input id="password" type="password" placeholder="Password">
     </div>
 
-    <button class="btn" onclick="login()">🚀 เข้าสู่ระบบ</button>
+    <button class="btn-login" onclick="login()">เข้าสู่ระบบ</button>
 
-    <div class="auth-link">
-      ✍️ <a href="register.html">ลงทะเบียน</a> |
-      🔄 <a href="verify.html">ขอรหัสใหม่</a>
+    <div class="register-link">
+      <a href="forgot.html">ลืมรหัสผ่าน?</a><br>
+      ยังไม่มีบัญชี? <a href="register.html">ลงทะเบียน</a>
     </div>
 
   </div>
@@ -51,46 +45,30 @@
 
 <!-- OVERLAY -->
 <div id="overlay" class="overlay hidden">
-  <div class="popup-card">
+  <div class="overlay-card">
     <div class="spinner"></div>
-    <p>กำลังตรวจสอบข้อมูล...</p>
+    <p>กำลังเข้าสู่ระบบ...</p>
   </div>
 </div>
 
 <!-- POPUP -->
 <div id="popup" class="popup hidden">
   <div class="popup-card">
-    <h3 id="popupTitle">แจ้งเตือน</h3>
+    <h3 id="popupTitle"></h3>
     <p id="popupMsg"></p>
-    <br>
-    <button class="btn" onclick="closePopup()">ตกลง</button>
+    <button class="btn-login" onclick="closePopup()">ตกลง</button>
   </div>
 </div>
 
+<script src="./js/core.js"></script>
+
 <script>
-/* =============================
-   UI CORE
-   ============================= */
-function showOverlay(){
-  document.getElementById('overlay').classList.remove('hidden');
-}
-function hideOverlay(){
-  document.getElementById('overlay').classList.add('hidden');
-}
-function showPopup(title,msg){
-  popupTitle.innerText = title;
-  popupMsg.innerText = msg;
-  popup.classList.remove('hidden');
-}
-function closePopup(){
-  popup.classList.add('hidden');
+/* auto redirect if session exists */
+if(sessionStorage.getItem('user')){
+  location.href = "index.html";
 }
 
-/* =============================
-   LOGIN (MOCK FLOW)
-   ============================= */
 function login(){
-
   if(!email.value || !password.value){
     showPopup("แจ้งเตือน","กรุณากรอก Email และ Password");
     return;
@@ -98,18 +76,24 @@ function login(){
 
   showOverlay();
 
-  // 🔧 ตัวอย่าง flow (แทน API จริง)
-  setTimeout(()=>{
+  callAPI('login',{
+    email: email.value,
+    password: password.value
+  })
+  .then(res=>{
     hideOverlay();
 
-    if(email.value === "admin@test.com"){
-      localStorage.setItem("it_session","ok");
-      location.href="index.html";
+    if(res.ok){
+      sessionStorage.setItem('user', JSON.stringify(res.user));
+      location.href = "index.html";
     }else{
-      showPopup("ไม่สำเร็จ","Email หรือ Password ไม่ถูกต้อง");
+      showPopup("ผิดพลาด", res.message);
     }
-
-  },1200);
+  })
+  .catch(()=>{
+    hideOverlay();
+    showPopup("ผิดพลาด","ไม่สามารถเชื่อมต่อระบบได้");
+  });
 }
 </script>
 
